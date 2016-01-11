@@ -6,7 +6,8 @@ import java.util.Scanner;
 public class proov {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		long startTime = System.currentTimeMillis();
+		
 		System.out.println("test");
 		System.out.println(getLocalCurrentDate());
 
@@ -31,6 +32,9 @@ public class proov {
 
 		}
 
+		long endTime   = System.currentTimeMillis();
+		long totalTime = endTime - startTime;
+		System.out.println("Program ran for " + totalTime + " milliseconds");
 	} // END MAIN
 
 	private static Date getLocalCurrentDate() {
