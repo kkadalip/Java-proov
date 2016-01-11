@@ -35,7 +35,7 @@
 		<!-- Put everything in ${build} into the {$projectName}-${DSTAMP}.jar file -->
 		<jar jarfile="${dist.dir}/${projectName}-${DSTAMP}.jar" basedir="${build.dir}" >
 		    <manifest>
-			<!-- create an executable Jar, MAIN CLASS java -cp dist/DateUtils-20141030.jar com.mkyong.core.utils.DateUtils -->
+			<!-- create an executable Jar, MAIN CLASS java -cp dist/DateUtils-20141030.jar com.karl.core.utils.DateUtils -->
 			<attribute name="Main-Class" value="proov" />
 		    </manifest>
 		</jar>
