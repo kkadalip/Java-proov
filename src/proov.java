@@ -19,9 +19,29 @@ public class proov {
 			System.out.println("we have args");
 			System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
 			// args[0].equals("h")
-			boolean userNeedsHelp = Arrays.asList(args).contains("h");
+			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?"); // ? and help should be as well
 			if(userNeedsHelp){
 				System.out.println("user needs help!!!!!");
+				// ant [options] [target [target2 [target3] ...]]
+				// Usage: / Options:
+				// where options include:
+				// -help, -h
+				// -projecthelp, -p
+				// -logfile <file>       use given file for log
+				// -logger <classname>
+			
+				// if line is too big, explanation to 2nd line but still same distance
+				
+				//System.out.println("-help, -h              print this message and exit");
+				// TEXT, empty space, 16th or 24th letter is text
+				System.out.println("Usage: java -jar jarfile <logfile> [args...]"); // logfile location?
+				System.out.println("Options:");
+				System.out.println("-help, -h, -?,        print this help message and exit");
+				System.out.println("<number>              prints top n resources with highest average request duration");
+				long endTime   = System.currentTimeMillis();
+				long totalTime = endTime - startTime;
+				System.out.println("Program ran for " + totalTime + " milliseconds.");
+				return;
 			}else{
 				System.out.println("NO HELP NEEDED");
 			}	
