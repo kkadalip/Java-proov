@@ -65,7 +65,28 @@ public class proov {
 				//System.out.println("Line: " + lineNr + " :" + line);
 				lineNr++;
 				String[] wordsOfLine = line.split(" ");
-				//System.out.println("wordsOfLine length: " + wordsOfLine.length);
+				System.out.println("Length: " + wordsOfLine.length + " Line: " + lineNr + " " + line);
+				// 7 or 9
+				// 1) date eg 2015-08-19
+				// 2) timestamp eg 00:06:44,560
+				// 3) thread-id (in brackets) eg (http--0.0.0.0-28080-187)
+				// 4) optional user context (in square brackets) eg [USER:300109921258]
+				
+				// !!! IF 7
+				// 5) URI + query string 
+
+				
+				// !!! IF 8
+				// 5) requested resource name (one string) eg getBroadbandSubscriptions
+				// 6) ??? eg CUS12B1435
+				
+				// !!! IF 9
+				// 5) requested resource name (one string) eg getSubcriptionCampaigns
+				// 6) data payload elements for resource (0..n elements) eg 300109921258
+				// 7) BOOLEAN SOMETHING!? eg true
+				
+				// length-2) string "in"
+				// length-1) request duration in ms
 				String lastWord = wordsOfLine[wordsOfLine.length - 1]; // duration
 				//System.out.println("last word is " + lastWord);
 			}
