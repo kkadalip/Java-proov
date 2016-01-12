@@ -163,21 +163,20 @@ public class proov {
 
 							String pairFirstHalf = "";
 							String pairSecondHalf = "";
+							String[] splittedPair = null;
 							for (String pair : queryPairs){
 								//int index = pair.indexOf("=");
 								System.out.println("pair is " + pair);
 								// SPLITTING PAIR TO FIRST AND SECOND HALF
-								String[] splittedPair = pair.split("=");
+								splittedPair = pair.split("=");
 								if(splittedPair.length == 2){
 									pairFirstHalf = splittedPair[0];
 									pairSecondHalf = splittedPair[1];
 									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
 								}
-
-								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
+								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId") || pairFirstHalf.equals("category")){
 									extraQueryParts += (pair + " ");
 								}
-								
 //								// PATH + ACTION=blablablabla
 //								// TODO THIS IS BROKEN IF IT HAS BOTH ACTION AND CONTENTID! Main path needs to be separate from queries for modify-ing
 //								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
@@ -185,7 +184,6 @@ public class proov {
 //										uniquePathsWithResources.add(path + " " + pair);
 //									}
 //								}
-								
 //								else{ // PATH
 //									if(!uniquePathsWithResources.contains(path)){
 //										uniquePathsWithResources.add(path);
@@ -194,19 +192,24 @@ public class proov {
 
 							} // FOR LOOP END
 							
-							// PATH + ACTION=blablablabla CONTENTID=blbablabal WHATEVER=blablabal
-							if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
-								if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
-									uniquePathsWithResources.add(path + " " + extraQueryParts);
-								}
-							}
+//							// PATH + ACTION=blablablabla CONTENTID=blbablabal WHATEVER=blablabal
+//							if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
+//								if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
+//									uniquePathsWithResources.add(path + " " + extraQueryParts);
+//								}
+//							}
 							
 						}else{
-							// NO QUERY
-							if(!uniquePathsWithResources.contains(path)){
-								System.out.println("ADDING PATH: " + path);
-								uniquePathsWithResources.add(path);
-							}
+//							// NO QUERY
+//							if(!uniquePathsWithResources.contains(path)){
+//								System.out.println("ADDING PATH: " + path);
+//								uniquePathsWithResources.add(path);
+//							}
+						}
+
+						if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
+							System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
+							uniquePathsWithResources.add(path + " " + extraQueryParts);
 						}
 
 
@@ -222,24 +225,16 @@ public class proov {
 					//if(aURL.getRef() != null)
 					//System.out.println("ref = " + aURL.getRef());
 
-
-
-
-
-
 				} catch (URISyntaxException e) {
 					System.out.println("URI SYNTAX EXCEPTION!");
 					e.printStackTrace();
 				}
-
 
 				// URL = Uniform Resource Locator
 				// = separates name from value
 				// & or ; separate field=value-s, series of items + + +   space is + or %20
 				// # can be used to specify a subsection/fragment of a document
 				// Letters A-Z, a-z, numbers 0-9 and characters * - . _ are left as-is.
-
-
 
 				System.out.println("[Date: "+ date +"] [Hour: "+ hour +"] [Duration: "+ duration + "]" );
 
