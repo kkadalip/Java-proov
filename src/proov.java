@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -44,6 +43,9 @@ import java.util.TreeMap;
 // TEXT, empty space, 16th or 24th letter is text
 
 //System.out.println(getLocalCurrentDate());
+//private static Date getLocalCurrentDate() {
+//return new Date();
+//}
 
 //File file = new File("timing.log"); //("file.txt"); FOR DEBUGGING, put into eclipse
 
@@ -71,11 +73,11 @@ public class proov {
 				if(userNeedsHelp){
 					// Printing help menu:
 					if(debug)System.out.println("User needs help!!!!!");
-					System.out.println("Usage: java -jar jarfile <logfile> [number]"); // TODO logfile location?
+					System.out.println("Usage: java -jar jarfile <logfile> [number]");
 					System.out.println("Options:");
 					System.out.println("-help, -h, -?,        print this help message and exit");
 					System.out.println("jarfile,              location of this .jar file");
-					System.out.println("<logfile>,            name or location of log file (without location use same folder as .jar file)");
+					System.out.println("<logfile>,            name or exact location of log file (without location use same folder as .jar file and write log file name and extension)");
 					System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
 					// End calculating program run duration.
 					long endTime   = System.currentTimeMillis();
@@ -123,10 +125,16 @@ public class proov {
 			file = new File(fileDir + "/" + logFileNameFromParams); // eg working directory with parameter timing.log
 		}
 		
-		// END ------------- CHECK LOG FILE LOCATION ---------------
-		// START -----------                         ---------------
+		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
+		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 		
-		List<String> dates = new ArrayList<String>();
+		// DATE,   Hours and data per each hour
+		// Date, Hour, hour data TODO
+		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<>(); //String,int[24][1]
+		//int[24][1] a = new int[][];
+		//datesAndHoursDataMap.put("test", a);
+		
+		List<String> dates = new ArrayList<String>(); // LIST FOR STORING ALL DATES
 		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
 		int[][] hoursAndRequests = new int[24][1];
 
@@ -315,11 +323,26 @@ public class proov {
 				// row // column // only using 0 for temp KVP
 				//System.out.println("adding hour " + hour + " and duration " + duration);
 				//hoursDurations[hour][0] += duration;
-				hoursAndRequests[hour][0] ++;
+				hoursAndRequests[hour][0] ++; // can do without [0], just make one dimensional array
 
 				//String[][] hourAndDuration = new String[hour][duration];
 				if(!dates.contains(date)){
 					dates.add(date);
+					// TODO
+					System.out.println("PUTTING DATE AND INTEGER HOLDERS INTO datesndHoursDataMap");
+					datesAndHoursDataMap.put(date, new int[24][1]); // Hours, hour data
+					int temp[][] = datesAndHoursDataMap.get(date);
+					int tempHourVal = temp[hour][0];
+					System.out.println("temp hour val is " + tempHourVal);
+					System.out.println("hour is " + hour + "temphourval++ is" + tempHourVal++);
+					temp[hour][0] = tempHourVal++; // Taking temp array [x hour][0] first element and putting +1 there, increasing the times it has been accessed at certain date, certain hour
+					datesAndHoursDataMap.put(date, temp); // new temp value +1
+					//temp = datesAndHoursDataMap.get(date);
+					//System.out.println("hour is " + hour);
+					//tempHourVal = temp[hour][0];
+					//System.out.println("temp hour val is NOW " + tempHourVal);
+					//(map.get("test")[0][1]);
+
 					//if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
 					//datesAndHours.put(date,)
 					//datesAndHours.put(date, new String[][]);
@@ -468,10 +491,6 @@ public class proov {
 		long totalTime = endTime - startTime;
 		System.out.println("Program ran for " + totalTime + " milliseconds.");
 	} // END MAIN
-
-	private static Date getLocalCurrentDate() {
-		return new Date();
-	}
 
 	private static Map<String, Double> sortByComparator(Map<String, Double> unsortMap) {
 
