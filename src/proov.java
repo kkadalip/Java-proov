@@ -27,7 +27,7 @@ public class proov {
 				int normalNumber = i+1;
 				System.out.println("Arg " + normalNumber + " is " + args[i]);
 			}
-			System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
+			//System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
 			// args[0].equals("h")
 			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?"); // ? and help should be as well
 			if(userNeedsHelp){
@@ -144,6 +144,8 @@ public class proov {
 				// 5) requested resource name (one string) eg getSubcriptionCampaigns
 				// 6) data payload elements for resource (0..n elements) eg 300109921258
 				// 7) BOOLEAN SOMETHING!? eg true
+				
+				// TODO REQUESTS HAVE DURATION (last element), NEED TO CALCULATE AVERAGE DURATION FOR EACH RESOURCE, SORT BY HIGHEST AND GIVE OUT n HIGHEST
 
 				// length-2) string "in"
 				// length-1) request duration in ms
@@ -157,12 +159,20 @@ public class proov {
 		for(String d : dates){
 			System.out.println("Date is: " + d);
 		}
-			
+		
+		String hourAndDurationPrint = "";
 		for (int i = 0; i < hoursDurations.length; i++) {
-			System.out.println("Hour: " + i);
+			//System.out.println("Hour: " + i);
+			hourAndDurationPrint = "Hour : "; // + i + " ";
+			if(i < 10){
+				hourAndDurationPrint += "0";
+			}
+			hourAndDurationPrint += i + " ";
 		    for (int j = 0; j < hoursDurations[i].length; j++) {
-		        //System.out.print(hoursDurations[i][j]);
-		    	System.out.println("Duration: " + hoursDurations[i][0]);
+		        ////System.out.print(hoursDurations[i][j]);
+		    	//System.out.println("Duration: " + hoursDurations[i][0]);
+		    	hourAndDurationPrint += "Duration: " + hoursDurations[i][0];
+		    	System.out.println(hourAndDurationPrint);
 		    }
 		}
 
