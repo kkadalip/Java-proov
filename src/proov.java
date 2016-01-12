@@ -29,53 +29,71 @@ import java.util.TreeMap;
 
 //System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
 //args[0].equals("h")
-// NOTES END: --------------------------------------------------
 
+// NOTES FOR HELP PRINTS:
+// ant [options] [target [target2 [target3] ...]]
+// Usage: / Options:
+// where options include:
+// -help, -h
+// -projecthelp, -p
+// -logfile <file>       use given file for log
+// -logger <classname>
+// if line is too big, explanation to 2nd line but still same distance
+
+//System.out.println("-help, -h              print this message and exit");
+// TEXT, empty space, 16th or 24th letter is text
+
+// NOTES END: --------------------------------------------------
 
 public class proov {
 	public static void main(String[] args) {
+		// Setting starting time for calculating program run duration in milliseconds.
 		long startTime = System.currentTimeMillis();
+		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
 		int nNumberFromParams = 0;
-		boolean debug = true;
+		// Debug parameter, set true to see debug log in console.
+		boolean debug = false;
 
 		// Setting numeric command line argument as n and TODO text argument as file name (or location)
 		if(args.length > 0){
 			if(debug)System.out.println("We have "+ args.length +" command line arguments!");
-			for(String arg : args){
-				if(isNumeric(arg)){
-					if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
-					nNumberFromParams = Integer.parseInt(arg);
+			// If user has correct amount of arguments ie one (log file name or location with name) or two (log file and how many average request durations).
+			if(args.length <3){
+				boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?");
+				if(userNeedsHelp){
+					// Printing help menu:
+					if(debug)System.out.println("User needs help!!!!!");
+					System.out.println("Usage: java -jar jarfile <logfile> [number]"); // TODO logfile location?
+					System.out.println("Options:");
+					System.out.println("-help, -h, -?,        print this help message and exit");
+					System.out.println("jarfile,              location of this .jar file");
+					System.out.println("<logfile>,            name or location of log file (without location use same folder as .jar file)");
+					System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
+					// End calculating program run duration:
+					long endTime   = System.currentTimeMillis();
+					long totalTime = endTime - startTime;
+					System.out.println("Program ran for " + totalTime + " milliseconds.");
+					return;
 				}else{
-					if(debug)System.out.println("Command line argument "+ arg +" is not numeric, not using as n.");
+					if(debug)System.out.println("User doesn't need help.");
+					for(String arg : args){
+						if(isNumeric(arg)){
+							if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
+							nNumberFromParams = Integer.parseInt(arg);
+						}else{
+							if(debug)System.out.println("Command line argument "+ arg +" is not numeric, not using as n.");
+						}
+					}
 				}
-			}
-
-			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?");
-			if(userNeedsHelp){
-				System.out.println("user needs help!!!!!");
-				// ant [options] [target [target2 [target3] ...]]
-				// Usage: / Options:
-				// where options include:
-				// -help, -h
-				// -projecthelp, -p
-				// -logfile <file>       use given file for log
-				// -logger <classname>
-
-				// if line is too big, explanation to 2nd line but still same distance
-
-				//System.out.println("-help, -h              print this message and exit");
-				// TEXT, empty space, 16th or 24th letter is text
-				System.out.println("Usage: java -jar jarfile <logfile> [args...]"); // logfile location?
-				System.out.println("Options:");
-				System.out.println("-help, -h, -?,        print this help message and exit");
-				System.out.println("<number>              prints top n resources with highest average request duration");
-				long endTime   = System.currentTimeMillis();
-				long totalTime = endTime - startTime;
-				System.out.println("Program ran for " + totalTime + " milliseconds.");
+			}else{ 
+				// User has more than 2 arguments, program stops and warns user.
+				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
 				return;
-			}else{
-				System.out.println("NO HELP NEEDED");
-			}	
+			}
+		}else{
+			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
+			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
+			return;
 		}
 
 		// IF WE HAVE LOG LOCATION ARGS AND IT EXISTS (tell user otherwise if it doesn't)
