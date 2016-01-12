@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -214,12 +215,14 @@ public class proov {
 		}
 		
 		// PRINTING OUT ALL UNIQUE RESOURCES (130)
+		Collections.sort(uniqueResources);
 		System.out.println("There are " + uniqueResources.size() + " unique resources.");
 		for(String resource : uniqueResources){
 			System.out.println(resource);
 		}
 		
 		// PRINTING OUT ALL UNIQUE PATHS (42)
+		Collections.sort(uniquePaths);
 		System.out.println("There are " + uniquePaths.size() + " unique paths.");
 		for(String path : uniquePaths){
 			System.out.println(path);
