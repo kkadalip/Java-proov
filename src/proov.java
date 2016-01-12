@@ -326,25 +326,25 @@ public class proov {
 		// values are lists of durations, now I can calculate average
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
-		
+
 		double totalCount = 0.0;
 		int sum = 0;
 		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()) { // KEY AND VALUE
 			String path = entry.getKey();
 			List<String> durations = entry.getValue();
 			totalCount = durations.size();
-			System.out.println("DURATIONS SIZE IS " + totalCount);
+			//System.out.println("DURATIONS SIZE IS " + totalCount);
 			if(totalCount > 0){
 				sum = 0;
 				for(String duration : durations){
 					sum += Double.parseDouble(duration);
-					System.out.println("duration added to sum " + duration);
+					//System.out.println("duration added to sum " + duration);
 				} // INNER FOR END
-				System.out.println("sum is " + sum + " totalcount is " + totalCount);
+				//System.out.println("sum is " + sum + " totalcount is " + totalCount);
 				double average = sum / totalCount;
-				System.out.println(path + " Average duration: " + average);
+				System.out.println(path + " Average duration: " + Math.round(average * 100d) / 100d + " ms.");
 			}else{
-				System.out.println(path + " Average duration: " + "???");
+				System.out.println(path + " Average duration: " + "??? ms.");
 			}
 		} // FOR END
 
@@ -381,5 +381,4 @@ public class proov {
 	private static Date getLocalCurrentDate() {
 		return new Date();
 	}
-
 }
