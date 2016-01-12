@@ -108,10 +108,10 @@ public class proov {
 			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
 			return;
 		}
-		
+
 		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
 		// START ------------- CHECK LOG FILE LOCATION --------------------
-		
+
 		// Check if user is entering exact log file location:
 		// eg "java -jar dist/Tulemus-20160112.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
 		String fileDir = "";
@@ -124,16 +124,16 @@ public class proov {
 			fileDir = System.getProperty("user.dir"); // The working directory of console (user dir). (eg C:\Users\karlk\workspace\Java-proov)
 			file = new File(fileDir + "/" + logFileNameFromParams); // eg working directory with parameter timing.log
 		}
-		
+
 		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
-		
+
 		// DATE,   Hours and data per each hour
 		// Date, Hour, hour data TODO
 		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<>(); //String,int[24][1]
 		//int[24][1] a = new int[][];
 		//datesAndHoursDataMap.put("test", a);
-		
+
 		List<String> dates = new ArrayList<String>(); // LIST FOR STORING ALL DATES
 		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
 		int[][] hoursAndRequests = new int[24][1];
@@ -148,7 +148,7 @@ public class proov {
 
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
 		// Needs to have average duration calculated and added
-		
+
 		try(Scanner scanner = new Scanner(file)){
 			//Scanner scanner = new Scanner(file);
 			//System.out.println("Scanner:" + scanner.toString());
@@ -407,13 +407,34 @@ public class proov {
 		// values are lists of durations, now I can calculate average
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
+
+		System.out.println("[Date][Hour][Amount of requests]");
+		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){ // KEY AND VALUE
+			String date = entry.getKey();
+			System.out.println("--------[Date:"+date+"]--------");
+			int[][] hoursAndData = entry.getValue();
+			for(int row = 0; row < hoursAndData.length; row++){
+				//System.out.println("row is " + row);
+				for(int element = 0; element < hoursAndData[row].length; element++){
+					//System.out.printf("Row: %d Element: %d Value: %d\n", row, element, container[row][element]);
+					if(row < 10){
+						System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
+					}else{
+						System.out.println("[Hour: "+ row + "] [Requests: " + element +"]");
+					}
+					
+				}
+			}
+
+		}
+
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
 
 		double totalCount = 0.0;
 		int sum = 0;
 		// PRINTING ALL RESULTS WITH AVERAGE DURATIONS
 		System.out.println("[Average duration][Request]");
-		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()) { // KEY AND VALUE
+		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()){ // KEY AND VALUE
 			String path = entry.getKey();
 			List<String> durations = entry.getValue();
 			totalCount = durations.size();
