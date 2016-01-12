@@ -155,7 +155,7 @@ public class proov {
 						if(!uniquePaths.contains(path)){
 							uniquePaths.add(path);
 						}
-
+						String extraQueryParts = ""; // IMPORTANT!!!
 						if(aURI.getQuery() != null){
 							String query = aURI.getQuery();
 							System.out.println("!!!! query = " + query);
@@ -174,19 +174,33 @@ public class proov {
 									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
 								}
 
-								// PATH + ACTION=blablablabla
 								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
-									if(!uniquePathsWithResources.contains(path + " " + pair)){
-										uniquePathsWithResources.add(path + " " + pair);
-									}
+									extraQueryParts += (pair + " ");
 								}
+								
+//								// PATH + ACTION=blablablabla
+//								// TODO THIS IS BROKEN IF IT HAS BOTH ACTION AND CONTENTID! Main path needs to be separate from queries for modify-ing
+//								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
+//									if(!uniquePathsWithResources.contains(path + " " + pair)){
+//										uniquePathsWithResources.add(path + " " + pair);
+//									}
+//								}
+								
 //								else{ // PATH
 //									if(!uniquePathsWithResources.contains(path)){
 //										uniquePathsWithResources.add(path);
 //									}
 //								}
 
+							} // FOR LOOP END
+							
+							// PATH + ACTION=blablablabla CONTENTID=blbablabal WHATEVER=blablabal
+							if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
+								if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
+									uniquePathsWithResources.add(path + " " + extraQueryParts);
+								}
 							}
+							
 						}else{
 							// NO QUERY
 							if(!uniquePathsWithResources.contains(path)){
@@ -274,21 +288,21 @@ public class proov {
 
 		// PRINTING OUT ALL UNIQUE RESOURCES (130)
 		Collections.sort(uniqueResources);
-		System.out.println("There are " + uniqueResources.size() + " unique resources.");
+		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
 		for(String resource : uniqueResources){
 			System.out.println(resource);
 		}
 
 		// PRINTING OUT ALL UNIQUE PATHS (42)
 		Collections.sort(uniquePaths);
-		System.out.println("There are " + uniquePaths.size() + " unique paths.");
+		System.out.println("------------------------ There are " + uniquePaths.size() + " unique paths.");
 		for(String path : uniquePaths){
 			System.out.println(path);
 		}
 
 		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
 		Collections.sort(uniquePathsWithResources);
-		System.out.println("There are " + uniquePathsWithResources.size() + " uniquePathsWithResources.");
+		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources. (FIXED?)");
 		for(String path : uniquePathsWithResources){
 			System.out.println(path);
 		}
