@@ -176,7 +176,7 @@ public class proov {
 				String line = scanner.nextLine();
 				//System.out.println("Line: " + lineNr + " :" + line);
 				String[] wordsOfLine = line.split(" ");
-				System.out.println("("+lineNr+") Length: " + wordsOfLine.length + " Line: " + line);
+				if(debug)System.out.println("("+lineNr+") Length: " + wordsOfLine.length + " Line: " + line);
 				lineNr++;				
 
 				// 1) DATE
@@ -276,13 +276,13 @@ public class proov {
 						}
 
 						if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
-							System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
+							if(debug)System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
 							uniquePathsWithResources.add(path + " " + extraQueryParts);
 							// TODO UNIQUE PATHS NEEDS TO HOLD ALL DURATIONS TO CALCULATE AVERAGE LATER
 						}
 						// SAME THING WITH MAP AND DURATION (Key Value Pairs)
 						if(!uniquePathsWithResourcesMap.containsKey(path + " " + extraQueryParts)){
-							System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
+							if(debug)System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
 							//List<String> values = Arrays.asList(duration); //new ArrayList<String>();
 							// Arrays.asList(duration); // or ("bla","bla","bla");
 							//uniquePathsWithResourcesMap.put(path + " " + extraQueryParts, values);
@@ -318,7 +318,7 @@ public class proov {
 				// # can be used to specify a subsection/fragment of a document
 				// Letters A-Z, a-z, numbers 0-9 and characters * - . _ are left as-is.
 
-				System.out.println("[Date: "+ date +"] [Hour: "+ hour +"] [Duration: "+ duration + "]" );
+				if(debug)System.out.println("[Date: "+ date +"] [Hour: "+ hour +"] [Duration: "+ duration + "]" );
 
 				// row // column // only using 0 for temp KVP
 				//System.out.println("adding hour " + hour + " and duration " + duration);
@@ -331,29 +331,29 @@ public class proov {
 					dates.add(date);
 				};	
 				// TODO
-				System.out.println("PUTTING DATE AND INTEGER HOLDERS INTO datesndHoursDataMap");
-				System.out.println("1GIVE STUFF " + datesAndHoursDataMap.get(date));
+				//System.out.println("PUTTING DATE AND INTEGER HOLDERS INTO datesndHoursDataMap");
+				//System.out.println("1GIVE STUFF " + datesAndHoursDataMap.get(date));
 				int[][] temp = datesAndHoursDataMap.get(date);
-				System.out.println("date is " + date + "temp is " + temp);
+				//System.out.println("date is " + date + "temp is " + temp);
 				// DATE EXISTS (should be hour?)
 				if(temp != null){
-					System.out.println("DATE EXISTS");
+					//System.out.println("DATE EXISTS");
 					int tempHourVal = temp[hour][0];
-					System.out.println("temp hour val is " + tempHourVal);
+					//System.out.println("temp hour val is " + tempHourVal);
 					tempHourVal++;
 					temp[hour][0] = tempHourVal;
 					datesAndHoursDataMap.put(date, temp);
 					tempHourVal = temp[hour][0];
-					System.out.println("NEW temp hour val is " + tempHourVal);
+					//System.out.println("NEW temp hour val is " + tempHourVal);
 					// NO SUCH DATE	
 				}else{
-					System.out.println("DATE DOES NOT EXIST");
+					//System.out.println("DATE DOES NOT EXIST");
 					//datesAndHoursDataMap.put(date, new int[24][1]); // Hours, hour data
 					temp = new int[24][1];
 					temp[hour][0] = 1;
 					datesAndHoursDataMap.put(date, temp);
-					System.out.println("please" + datesAndHoursDataMap.get(date)[hour][0]); // WORKS please1
-					System.out.println("2GIVE STUFF " + datesAndHoursDataMap.get(date));
+					//System.out.println("please" + datesAndHoursDataMap.get(date)[hour][0]); // WORKS please1
+					//System.out.println("2GIVE STUFF " + datesAndHoursDataMap.get(date));
 				}
 				//System.out.println("hour is " + hour + "temphourval++ is" + tempHourVal++);
 				//temp[hour][0] = tempHourVal++; // Taking temp array [x hour][0] first element and putting +1 there, increasing the times it has been accessed at certain date, certain hour
@@ -429,10 +429,10 @@ public class proov {
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
 
-		System.out.println("[Date][Hour][Amount of requests]");
+		//System.out.println("[Date][Hour][Amount of requests]");
 		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){ // KEY AND VALUE
 			String date = entry.getKey();
-			System.out.println("--------[Date:"+date+"]--------");
+			System.out.println("-----Date:"+date+"-----");
 			int[][] hoursAndData = entry.getValue();
 			// ROWS
 			for(int row = 0; row < hoursAndData.length; row++){
@@ -459,8 +459,8 @@ public class proov {
 
 		double totalCount = 0.0;
 		int sum = 0;
-		// PRINTING ALL RESULTS WITH AVERAGE DURATIONS
-		System.out.println("[Average duration][Request]");
+		// PRINTING ALL unsorted RESULTS WITH AVERAGE DURATIONS
+		if(debug)System.out.println("[Average duration][Request] unsorted");
 		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()){ // KEY AND VALUE
 			String path = entry.getKey();
 			List<String> durations = entry.getValue();
@@ -476,12 +476,12 @@ public class proov {
 				double average = sum / totalCount;
 				NumberFormat formatter = new DecimalFormat("#0000.00");
 				// Formatter does the rounding for me!
-				System.out.println("["+formatter.format(average)+"ms] " + path);
+				if(debug)System.out.println("["+formatter.format(average)+"ms] " + path);
 				//System.out.println("["+Math.round(average * 100d) / 100d + "ms]" + path);
 				//pathsWithAverageDuration.put(path, Double.toString(average));
 				pathsWithAverageDuration.put(path, average);
 			}else{
-				System.out.println(path + " Average duration: " + "??? ms.");
+				if(debug)System.out.println(path + " Average duration: " + "??? ms.");
 			}
 		} // FOR END
 
@@ -498,7 +498,7 @@ public class proov {
 		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
 
 		// PRINTING SORTED MAP AND SHOWING n AMOUNT OF HIGHEST AVERAGE DURATION RESULTS
-		String sortedResultsHeader = "[Average duration][Request]";
+		String sortedResultsHeader = "\n[Average duration][Request]";
 		if(nNumberFromParams>0){
 			sortedResultsHeader += "(Showing "+nNumberFromParams+"/"+sortedMap.size()+" results)";
 		}else{
@@ -511,8 +511,10 @@ public class proov {
 		printMap(sortedMap, nNumberFromParams);
 
 		// for (int i=0; i < array.length; i++) {
-		for(String d : dates){
-			System.out.println("Date is: " + d);
+		if(debug){
+			for(String d : dates){
+				System.out.println("Date is: " + d);
+			}
 		}
 
 		String hourAndRequestsAmount = "";
@@ -520,14 +522,14 @@ public class proov {
 			//System.out.println("Hour: " + i);
 			hourAndRequestsAmount = "Hour: "; // + i + " ";
 			if(i < 10){
-				hourAndRequestsAmount += "0";
+				if(debug)hourAndRequestsAmount += "0";
 			}
 			hourAndRequestsAmount += i + " ";
 			for (int j = 0; j < hoursAndRequests[i].length; j++) {
 				////System.out.print(hoursDurations[i][j]);
 				//System.out.println("Duration: " + hoursDurations[i][0]);
 				hourAndRequestsAmount += "Requests: " + hoursAndRequests[i][0];
-				System.out.println(hourAndRequestsAmount);
+				if(debug)System.out.println(hourAndRequestsAmount);
 			}
 		}
 
