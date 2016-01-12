@@ -218,10 +218,11 @@ public class proov {
 						// SAME THING WITH MAP AND DURATION (Key Value Pairs)
 						if(!uniquePathsWithResourcesMap.containsKey(path + " " + extraQueryParts)){
 							System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
-							List<String> values = Arrays.asList(duration); //new ArrayList<String>();
+							//List<String> values = Arrays.asList(duration); //new ArrayList<String>();
 							// Arrays.asList(duration); // or ("bla","bla","bla");
-							uniquePathsWithResourcesMap.put(path + " " + extraQueryParts, values);
-							uniquePathsWithResourcesMap.put(path + " " + extraQueryParts,new ArrayList<String>());
+							//uniquePathsWithResourcesMap.put(path + " " + extraQueryParts, values);
+							uniquePathsWithResourcesMap.put(path + " " + extraQueryParts,new ArrayList<String>(Arrays.asList(duration)));
+							//uniquePathsWithResourcesMap.get(path + " " + extraQueryParts).add(duration);
 							// TODO UNIQUE PATHS NEEDS TO HOLD ALL DURATIONS TO CALCULATE AVERAGE LATER
 						}else{
 							// TODO IF EXISTS, need to add to values list (Durations)
@@ -326,7 +327,7 @@ public class proov {
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
 		
-		int totalCount = 0;
+		double totalCount = 0.0;
 		int sum = 0;
 		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()) { // KEY AND VALUE
 			String path = entry.getKey();
@@ -336,7 +337,7 @@ public class proov {
 			if(totalCount > 0){
 				sum = 0;
 				for(String duration : durations){
-					sum += Integer.parseInt(duration);
+					sum += Double.parseDouble(duration);
 					System.out.println("duration added to sum " + duration);
 				} // INNER FOR END
 				System.out.println("sum is " + sum + " totalcount is " + totalCount);
