@@ -25,6 +25,7 @@ public class proov {
 
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
+		int nNumberFromParams = 0;
 		//aks-mbp:dist ak$ java -jar assignment.jar timing.log 10
 		// aks-mbp:dist ak$
 		// (java -jar)
@@ -36,10 +37,21 @@ public class proov {
 			System.out.println("we have args");
 			//for(String arg : args){
 			System.out.println("We have " + args.length + " optional parameters aka args.");
-			for(int i=0; i<args.length; i++){
-				int normalNumber = i+1;
-				System.out.println("Arg " + normalNumber + " is " + args[i]);
+			//for(int i=0; i<args.length; i++){
+			int normalNumber = 1;
+			
+			for(String arg : args){
+				//int normalNumber = i+1;
+				System.out.println("Arg " + normalNumber + " is " + arg);
+				normalNumber++;
+				if(isNumeric(arg)){
+					System.out.println("arg is numeric, use as n: " + arg);
+					nNumberFromParams = Integer.parseInt(arg);
+				}else{
+					System.out.println("arg is not numeric, do not use as n");
+				}
 			}
+			
 			//System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
 			// args[0].equals("h")
 			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?"); // ? and help should be as well
@@ -378,7 +390,8 @@ public class proov {
 		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
 		
 		//printMap(sortedMap, Optional.empty());
-		printMap(sortedMap, Optional.of(5));
+		//printMap(sortedMap, Optional.of(1000)); nNumberFromParams
+		printMap(sortedMap, nNumberFromParams);
 		
 		// for (int i=0; i < array.length; i++) {
 		for(String d : dates){
@@ -436,9 +449,11 @@ public class proov {
 		}
 		return sortedMap;
 	}
-
+	public static void printMap(Map<String, Double> map) {
+		printMap(map, 0);
+	}
 	// Print out top n (exact value of n is passed as program argument) resources with highest average request duration.
-	public static void printMap(Map<String, Double> map, Optional<Integer> n) {
+	public static void printMap(Map<String, Double> map, int n) {
 		//int optional_n = n.isPresent() ? n.get() : 0;
 
 		//		for (Map.Entry<String, Double> entry : map.entrySet()) {
@@ -449,17 +464,16 @@ public class proov {
 		//			System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
 		//		}
 		NumberFormat formatter = new DecimalFormat("#0000.00");
-		if(n.isPresent() && n.get() > 0){
-			int optional_n = Integer.valueOf(n.get());
-			int limit = 0;
-			if(optional_n > map.entrySet().size()){
-				limit = map.entrySet().size();
+		if(n > 0){
+			int counter = 0;
+			if(n > map.entrySet().size()){
+				n = map.entrySet().size();
 			}
 			for (Map.Entry<String, Double> entry : map.entrySet()) {
-				if(limit<optional_n){
+				if(counter<n){
 					// Value is average duration, Key is path with selected queries
 					System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
-					limit++;
+					counter++;
 				}else{
 					break;
 				}
@@ -470,5 +484,19 @@ public class proov {
 				System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
 			}
 		}
+	}
+	
+	// TO CHECK IF command line ARGUMENT IS NUMBER OR NOT (for n amount of highest)
+	public static boolean isNumeric(String str)  
+	{  
+	  try  
+	  {  
+	    double d = Double.parseDouble(str);  
+	  }  
+	  catch(NumberFormatException nfe)  
+	  {  
+	    return false;  
+	  }  
+	  return true;  
 	}
 }
