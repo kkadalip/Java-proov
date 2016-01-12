@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -366,6 +367,7 @@ public class proov {
 		// TODO CREATE A NEW KVP String String Map to sort the path + duration.
 		// TODO Then use command line optional parameter to display top n amount.
 		System.out.println("----PRINTING MAP!");
+		System.out.println("[Average duration][Request]");
 		//printMap(pathsWithAverageDuration);
 
 		// To sort Map by keys, use TreeMap
@@ -374,8 +376,10 @@ public class proov {
 		// Map ---> List ---> Sort --> SortedList ---> Map
 
 		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
-		printMap(sortedMap);
-
+		
+		//printMap(sortedMap, Optional.empty());
+		printMap(sortedMap, Optional.of(5));
+		
 		// for (int i=0; i < array.length; i++) {
 		for(String d : dates){
 			System.out.println("Date is: " + d);
@@ -433,13 +437,38 @@ public class proov {
 		return sortedMap;
 	}
 
-	public static void printMap(Map<String, Double> map) {
-		for (Map.Entry<String, Double> entry : map.entrySet()) {
-			//System.out.println("Key : " + entry.getKey() 
-			//+ " Value : " + entry.getValue());
-			NumberFormat formatter = new DecimalFormat("#0000.00");
-			// Value is average duration, Key is path with selected queries
-			System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
+	// Print out top n (exact value of n is passed as program argument) resources with highest average request duration.
+	public static void printMap(Map<String, Double> map, Optional<Integer> n) {
+		//int optional_n = n.isPresent() ? n.get() : 0;
+
+		//		for (Map.Entry<String, Double> entry : map.entrySet()) {
+		//			//System.out.println("Key : " + entry.getKey() 
+		//			//+ " Value : " + entry.getValue());
+		//			NumberFormat formatter = new DecimalFormat("#0000.00");
+		//			// Value is average duration, Key is path with selected queries
+		//			System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
+		//		}
+		NumberFormat formatter = new DecimalFormat("#0000.00");
+		if(n.isPresent() && n.get() > 0){
+			int optional_n = Integer.valueOf(n.get());
+			int limit = 0;
+			if(optional_n > map.entrySet().size()){
+				limit = map.entrySet().size();
+			}
+			for (Map.Entry<String, Double> entry : map.entrySet()) {
+				if(limit<optional_n){
+					// Value is average duration, Key is path with selected queries
+					System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
+					limit++;
+				}else{
+					break;
+				}
+			}
+		}else{
+			for (Map.Entry<String, Double> entry : map.entrySet()) {
+				// Value is average duration, Key is path with selected queries
+				System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
+			}
 		}
 	}
 }
