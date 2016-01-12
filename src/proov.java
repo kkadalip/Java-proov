@@ -65,7 +65,8 @@ public class proov {
 		File file = new File(userDir + "/timing.log");
 
 		List<String> dates = new ArrayList<String>();
-		int[][] hoursDurations = new int[24][1]; // can't be empty 0 and 23
+		//int[][] hoursDurations = new int[24][1]; // can't be empty 0 and 23
+		int[][] hoursAndRequests = new int[24][1];
 		
 		try {
 			Scanner scanner = new Scanner(file);
@@ -115,7 +116,8 @@ public class proov {
 				
 				// row // column // only using 0 for temp KVP
 				//System.out.println("adding hour " + hour + " and duration " + duration);
-				hoursDurations[hour][0] += duration;
+				//hoursDurations[hour][0] += duration;
+				hoursAndRequests[hour][0] ++;
 
 				//String[][] hourAndDuration = new String[hour][duration];
 				if(!dates.contains(date)){
@@ -160,19 +162,19 @@ public class proov {
 			System.out.println("Date is: " + d);
 		}
 		
-		String hourAndDurationPrint = "";
-		for (int i = 0; i < hoursDurations.length; i++) {
+		String hourAndRequestsAmount = "";
+		for (int i = 0; i < hoursAndRequests.length; i++) {
 			//System.out.println("Hour: " + i);
-			hourAndDurationPrint = "Hour : "; // + i + " ";
+			hourAndRequestsAmount = "Hour : "; // + i + " ";
 			if(i < 10){
-				hourAndDurationPrint += "0";
+				hourAndRequestsAmount += "0";
 			}
-			hourAndDurationPrint += i + " ";
-		    for (int j = 0; j < hoursDurations[i].length; j++) {
+			hourAndRequestsAmount += i + " ";
+		    for (int j = 0; j < hoursAndRequests[i].length; j++) {
 		        ////System.out.print(hoursDurations[i][j]);
 		    	//System.out.println("Duration: " + hoursDurations[i][0]);
-		    	hourAndDurationPrint += "Duration: " + hoursDurations[i][0];
-		    	System.out.println(hourAndDurationPrint);
+		    	hourAndRequestsAmount += "Amount of requests: " + hoursAndRequests[i][0];
+		    	System.out.println(hourAndRequestsAmount);
 		    }
 		}
 
