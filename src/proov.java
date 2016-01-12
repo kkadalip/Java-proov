@@ -130,7 +130,7 @@ public class proov {
 
 		// DATE,   Hours and data per each hour
 		// Date, Hour, hour data TODO
-		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<>(); //String,int[24][1]
+		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>(); //String,int[24][1]
 		//int[24][1] a = new int[][];
 		//datesAndHoursDataMap.put("test", a);
 
@@ -326,27 +326,48 @@ public class proov {
 				hoursAndRequests[hour][0] ++; // can do without [0], just make one dimensional array
 
 				//String[][] hourAndDuration = new String[hour][duration];
+				// TODO FIX
 				if(!dates.contains(date)){
 					dates.add(date);
-					// TODO
-					System.out.println("PUTTING DATE AND INTEGER HOLDERS INTO datesndHoursDataMap");
-					datesAndHoursDataMap.put(date, new int[24][1]); // Hours, hour data
-					int temp[][] = datesAndHoursDataMap.get(date);
+				};	
+				// TODO
+				System.out.println("PUTTING DATE AND INTEGER HOLDERS INTO datesndHoursDataMap");
+				System.out.println("1GIVE STUFF " + datesAndHoursDataMap.get(date));
+				int[][] temp = datesAndHoursDataMap.get(date);
+				System.out.println("date is " + date + "temp is " + temp);
+				// DATE EXISTS (should be hour?)
+				if(temp != null){
+					System.out.println("DATE EXISTS");
 					int tempHourVal = temp[hour][0];
 					System.out.println("temp hour val is " + tempHourVal);
-					System.out.println("hour is " + hour + "temphourval++ is" + tempHourVal++);
-					temp[hour][0] = tempHourVal++; // Taking temp array [x hour][0] first element and putting +1 there, increasing the times it has been accessed at certain date, certain hour
-					datesAndHoursDataMap.put(date, temp); // new temp value +1
-					//temp = datesAndHoursDataMap.get(date);
-					//System.out.println("hour is " + hour);
-					//tempHourVal = temp[hour][0];
-					//System.out.println("temp hour val is NOW " + tempHourVal);
-					//(map.get("test")[0][1]);
+					tempHourVal++;
+					temp[hour][0] = tempHourVal;
+					datesAndHoursDataMap.put(date, temp);
+					tempHourVal = temp[hour][0];
+					System.out.println("NEW temp hour val is " + tempHourVal);
+					// NO SUCH DATE	
+				}else{
+					System.out.println("DATE DOES NOT EXIST");
+					//datesAndHoursDataMap.put(date, new int[24][1]); // Hours, hour data
+					temp = new int[24][1];
+					temp[hour][0] = 1;
+					datesAndHoursDataMap.put(date, temp);
+					System.out.println("please" + datesAndHoursDataMap.get(date)[hour][0]); // WORKS please1
+					System.out.println("2GIVE STUFF " + datesAndHoursDataMap.get(date));
+				}
+				//System.out.println("hour is " + hour + "temphourval++ is" + tempHourVal++);
+				//temp[hour][0] = tempHourVal++; // Taking temp array [x hour][0] first element and putting +1 there, increasing the times it has been accessed at certain date, certain hour
+				//datesAndHoursDataMap.put(date, temp); // new temp value +1
+				//temp = datesAndHoursDataMap.get(date);
+				//System.out.println("hour is " + hour);
+				//tempHourVal = temp[hour][0];
+				//System.out.println("temp hour val is NOW " + tempHourVal);
+				//(map.get("test")[0][1]);
 
-					//if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
-					//datesAndHours.put(date,)
-					//datesAndHours.put(date, new String[][]);
-				};				
+				//if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
+				//datesAndHours.put(date,)
+				//datesAndHours.put(date, new String[][]);
+
 				//datesAndHours.put(arg0, arg1)
 
 				// 7 or 9
@@ -413,16 +434,20 @@ public class proov {
 			String date = entry.getKey();
 			System.out.println("--------[Date:"+date+"]--------");
 			int[][] hoursAndData = entry.getValue();
+			// ROWS
 			for(int row = 0; row < hoursAndData.length; row++){
 				//System.out.println("row is " + row);
+				// COLUMNS:
 				for(int element = 0; element < hoursAndData[row].length; element++){
 					//System.out.printf("Row: %d Element: %d Value: %d\n", row, element, container[row][element]);
 					if(row < 10){
-						System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
+						//System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
+						System.out.println("[Hour: 0"+ row + "] [Requests: " + hoursAndData[row][element] +"]");
 					}else{
-						System.out.println("[Hour: "+ row + "] [Requests: " + element +"]");
+						//System.out.println("[Hour: "+ row + "] [Requests: " + element +"]");
+						System.out.println("[Hour: "+ row + "] [Requests: " + hoursAndData[row][element] +"]");
 					}
-					
+
 				}
 			}
 
