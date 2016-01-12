@@ -1,9 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -149,7 +146,7 @@ public class proov {
 				if(!uniqueResources.contains(resource)){
 					uniqueResources.add(resource);
 				}
-				System.out.println("Resource: " + resource);
+//				System.out.println("Resource: " + resource);
 
 				// last) DURATION
 				String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
@@ -174,14 +171,14 @@ public class proov {
 					// /main.do&contentId=undefined is wrong because of "&" and won't be split
 					if(aURI.getPath() != null){
 						String path = aURI.getPath();
-						System.out.println("!!!! path = " + path);
+//						System.out.println("!!!! path = " + path);
 						if(!uniquePaths.contains(path)){
 							uniquePaths.add(path);
 						}
 						String extraQueryParts = ""; // IMPORTANT!!!
 						if(aURI.getQuery() != null){
 							String query = aURI.getQuery();
-							System.out.println("!!!! query = " + query);
+//							System.out.println("!!!! query = " + query);
 							String[] queryPairs = query.split("&");
 
 							String pairFirstHalf = "";
@@ -189,13 +186,13 @@ public class proov {
 							String[] splittedPair = null;
 							for (String pair : queryPairs){
 								//int index = pair.indexOf("=");
-								System.out.println("pair is " + pair);
+//								System.out.println("pair is " + pair);
 								// SPLITTING PAIR TO FIRST AND SECOND HALF
 								splittedPair = pair.split("=");
 								if(splittedPair.length == 2){
 									pairFirstHalf = splittedPair[0];
 									pairSecondHalf = splittedPair[1];
-									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
+//									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
 								}
 								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId") || pairFirstHalf.equals("category")){
 									extraQueryParts += (pair + " ");
@@ -319,38 +316,39 @@ public class proov {
 		}
 
 		// PRINTING OUT ALL UNIQUE RESOURCES (130)
-		Collections.sort(uniqueResources);
-		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
-		for(String resource : uniqueResources){
-			System.out.println(resource);
-		}
+//		Collections.sort(uniqueResources);
+//		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
+//		for(String resource : uniqueResources){
+//			System.out.println(resource);
+//		}
 
 		// PRINTING OUT ALL UNIQUE PATHS (42)
-		Collections.sort(uniquePaths);
-		System.out.println("------------------------ There are " + uniquePaths.size() + " unique paths.");
-		for(String path : uniquePaths){
-			System.out.println(path);
-		}
+//		Collections.sort(uniquePaths);
+//		System.out.println("------------------------ There are " + uniquePaths.size() + " unique paths.");
+//		for(String path : uniquePaths){
+//			System.out.println(path);
+//		}
 
 		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
-		Collections.sort(uniquePathsWithResources);
-		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources. (FIXED?)");
-		for(String path : uniquePathsWithResources){
-			System.out.println(path);
-		}
+//		Collections.sort(uniquePathsWithResources);
+//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources. (FIXED?)");
+//		for(String path : uniquePathsWithResources){
+//			System.out.println(path);
+//		}
+		
 		// SAME THING WITH MAP AND KVP-s!!!!
 		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
-		Collections.sort(uniquePathsWithResources);
-		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources MAP");
+//		Collections.sort(uniquePathsWithResources);
+//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources MAP");
 		// Keys are paths + important query parts
 		// values are lists of durations, now I can calculate average
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
-
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
 
 		double totalCount = 0.0;
 		int sum = 0;
+		// PRINTING ALL RESULTS WITH AVERAGE DURATIONS
 		System.out.println("[Average duration][Request]");
 		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()) { // KEY AND VALUE
 			String path = entry.getKey();
@@ -378,8 +376,7 @@ public class proov {
 
 		// TODO CREATE A NEW KVP String String Map to sort the path + duration.
 		// TODO Then use command line optional parameter to display top n amount.
-		System.out.println("----PRINTING MAP!");
-		System.out.println("[Average duration][Request]");
+
 		//printMap(pathsWithAverageDuration);
 
 		// To sort Map by keys, use TreeMap
@@ -388,6 +385,15 @@ public class proov {
 		// Map ---> List ---> Sort --> SortedList ---> Map
 
 		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
+
+		// PRINTING SORTED MAP AND SHOWING n AMOUNT OF HIGHEST AVERAGE DURATION RESULTS
+		String sortedResultsHeader = "[Average duration][Request]";
+		if(nNumberFromParams>0){
+			sortedResultsHeader += "(Showing "+nNumberFromParams+"/"+sortedMap.size()+" results)";
+		}else{
+			sortedResultsHeader += "(Showing " + sortedMap.size() + " results)";
+		}
+		System.out.println(sortedResultsHeader);
 		
 		//printMap(sortedMap, Optional.empty());
 		//printMap(sortedMap, Optional.of(1000)); nNumberFromParams
