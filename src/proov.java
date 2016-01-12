@@ -73,11 +73,11 @@ public class proov {
 				if(userNeedsHelp){
 					// Printing help menu:
 					if(debug)System.out.println("User needs help!!!!!");
-					System.out.println("Usage: java -jar jarfile <logfile> [number]");
+					System.out.println("Usage: java -jar jarfile <logfile> [number *optional*]");
 					System.out.println("Options:");
 					System.out.println("-help, -h, -?,        print this help message and exit");
 					System.out.println("jarfile,              location of this .jar file");
-					System.out.println("<logfile>,            name or exact location of log file (without location use same folder as .jar file and write log file name and extension)");
+					System.out.println("<logfile>,            only file name with extension (if log file is in command prompt working directory) or exact location of log file");
 					System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
 					// End calculating program run duration.
 					long endTime   = System.currentTimeMillis();
