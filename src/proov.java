@@ -1,7 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class proov {
@@ -47,6 +51,8 @@ public class proov {
 			}	
 		}
 		
+		// IF WE HAVE LOG LOCATION ARGS AND IT EXISTS (tell user otherwise if it doesn't)
+		
 		System.out.println("test");
 		System.out.println(getLocalCurrentDate());
 
@@ -60,14 +66,50 @@ public class proov {
 
 			// Reading Scanner class lines
 			int lineNr = 1;
+			
+			// HOURS ARRAY (FOR HISTOGRAM), X hours. First element 0th, last 23rd if only one 24h period
+			// Pair<Integer, String> myPair = new Pair<>(7, "Seven");
+			// Map<String, String>
+			// Map<String, String[]>
+			
+			Map<String, String[]> datesAndHours = new HashMap<String, String[]>();
+			
+			//List<String> dates = new ArrayList<String>();
+			//List<String> hours = new ArrayList<String>();
+			
+			//String[] dates; //new String[24];
+			//String[] hours;
+			// [][] date + hour data later on
+			
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				//System.out.println("Line: " + lineNr + " :" + line);
 				lineNr++;
 				String[] wordsOfLine = line.split(" ");
 				System.out.println("Length: " + wordsOfLine.length + " Line: " + lineNr + " " + line);
+			
+				// 1) DATE
+				String date = wordsOfLine[0];
+				//dates.add(date);
+				System.out.println("date is " + date);
+				// 2) TIMESTAMP (I need hour)
+				//String hour = wordsOfLine[1].split(":")[0];
+				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]);
+				System.out.println("hour is " + hour);
+				
+				// last) DURATION
+				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
+				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
+				System.out.println("duration is " + duration);
+				
+				//String[][] hourAndDuration = new String[hour][duration];
+				if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
+					//datesAndHours.put(date,)
+				};
+				//datesAndHours.put(arg0, arg1)
+				
 				// 7 or 9
-				// 1) date eg 2015-08-19
+				// 1) date eg 2015-08-19 // WHAT IF NOT SAME DATE (histogram)? 24h for each date? or just date + add hours?
 				// 2) timestamp eg 00:06:44,560
 				// 3) thread-id (in brackets) eg (http--0.0.0.0-28080-187)
 				// 4) optional user context (in square brackets) eg [USER:300109921258]
@@ -87,8 +129,7 @@ public class proov {
 				
 				// length-2) string "in"
 				// length-1) request duration in ms
-				String lastWord = wordsOfLine[wordsOfLine.length - 1]; // duration
-				//System.out.println("last word is " + lastWord);
+
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("Scanner error");
