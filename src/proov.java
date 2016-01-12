@@ -325,22 +325,27 @@ public class proov {
 		// values are lists of durations, now I can calculate average
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
+		
+		int totalCount = 0;
+		int sum = 0;
 		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()) { // KEY AND VALUE
 			String path = entry.getKey();
 			List<String> durations = entry.getValue();
-			int totalCount = durations.size();
+			totalCount = durations.size();
+			System.out.println("DURATIONS SIZE IS " + totalCount);
 			if(totalCount > 0){
-				int sum = 0;
+				sum = 0;
 				for(String duration : durations){
 					sum += Integer.parseInt(duration);
-				}
+					System.out.println("duration added to sum " + duration);
+				} // INNER FOR END
+				System.out.println("sum is " + sum + " totalcount is " + totalCount);
 				double average = sum / totalCount;
 				System.out.println(path + " Average duration: " + average);
 			}else{
 				System.out.println(path + " Average duration: " + "???");
 			}
-		}
-
+		} // FOR END
 
 		// for (int i=0; i < array.length; i++) {
 		for(String d : dates){
