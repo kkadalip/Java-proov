@@ -78,6 +78,9 @@ public class proov {
 		List<String> uniquePaths = new ArrayList<>();
 
 		List<String> uniquePathsWithResources = new ArrayList<>();
+
+		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
+
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
 		// Needs to have average duration calculated and added
 
@@ -129,10 +132,10 @@ public class proov {
 				System.out.println("Resource: " + resource);
 
 				// last) DURATION
-				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
-				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
+				String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
+				//int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
 				//System.out.println("duration is " + duration);
-				
+
 				URI aURI;
 				try {
 					aURI = new URI(resource);
@@ -177,39 +180,52 @@ public class proov {
 								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId") || pairFirstHalf.equals("category")){
 									extraQueryParts += (pair + " ");
 								}
-//								// PATH + ACTION=blablablabla
-//								// TODO THIS IS BROKEN IF IT HAS BOTH ACTION AND CONTENTID! Main path needs to be separate from queries for modify-ing
-//								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
-//									if(!uniquePathsWithResources.contains(path + " " + pair)){
-//										uniquePathsWithResources.add(path + " " + pair);
-//									}
-//								}
-//								else{ // PATH
-//									if(!uniquePathsWithResources.contains(path)){
-//										uniquePathsWithResources.add(path);
-//									}
-//								}
+								//								// PATH + ACTION=blablablabla
+								//								// TODO THIS IS BROKEN IF IT HAS BOTH ACTION AND CONTENTID! Main path needs to be separate from queries for modify-ing
+								//								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
+								//									if(!uniquePathsWithResources.contains(path + " " + pair)){
+								//										uniquePathsWithResources.add(path + " " + pair);
+								//									}
+								//								}
+								//								else{ // PATH
+								//									if(!uniquePathsWithResources.contains(path)){
+								//										uniquePathsWithResources.add(path);
+								//									}
+								//								}
 
 							} // FOR LOOP END
-							
-//							// PATH + ACTION=blablablabla CONTENTID=blbablabal WHATEVER=blablabal
-//							if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
-//								if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
-//									uniquePathsWithResources.add(path + " " + extraQueryParts);
-//								}
-//							}
-							
+
+							//							// PATH + ACTION=blablablabla CONTENTID=blbablabal WHATEVER=blablabal
+							//							if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
+							//								if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
+							//									uniquePathsWithResources.add(path + " " + extraQueryParts);
+							//								}
+							//							}
+
 						}else{
-//							// NO QUERY
-//							if(!uniquePathsWithResources.contains(path)){
-//								System.out.println("ADDING PATH: " + path);
-//								uniquePathsWithResources.add(path);
-//							}
+							//							// NO QUERY
+							//							if(!uniquePathsWithResources.contains(path)){
+							//								System.out.println("ADDING PATH: " + path);
+							//								uniquePathsWithResources.add(path);
+							//							}
 						}
 
 						if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
 							System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
 							uniquePathsWithResources.add(path + " " + extraQueryParts);
+							// TODO UNIQUE PATHS NEEDS TO HOLD ALL DURATIONS TO CALCULATE AVERAGE LATER
+						}
+						// SAME THING WITH MAP AND DURATION (Key Value Pairs)
+						if(!uniquePathsWithResourcesMap.containsKey(path + " " + extraQueryParts)){
+							System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
+							List<String> values = Arrays.asList(duration); //new ArrayList<String>();
+							// Arrays.asList(duration); // or ("bla","bla","bla");
+							uniquePathsWithResourcesMap.put(path + " " + extraQueryParts, values);
+							uniquePathsWithResourcesMap.put(path + " " + extraQueryParts,new ArrayList<String>());
+							// TODO UNIQUE PATHS NEEDS TO HOLD ALL DURATIONS TO CALCULATE AVERAGE LATER
+						}else{
+							// TODO IF EXISTS, need to add to values list (Durations)
+							uniquePathsWithResourcesMap.get(path + " " + extraQueryParts).add(duration);
 						}
 
 
@@ -300,6 +316,29 @@ public class proov {
 		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources. (FIXED?)");
 		for(String path : uniquePathsWithResources){
 			System.out.println(path);
+		}
+		// SAME THING WITH MAP AND KVP-s!!!!
+		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
+		Collections.sort(uniquePathsWithResources);
+		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources MAP");
+		// Keys are paths + important query parts
+		// values are lists of durations, now I can calculate average
+		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
+		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
+		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()) { // KEY AND VALUE
+			String path = entry.getKey();
+			List<String> durations = entry.getValue();
+			int totalCount = durations.size();
+			if(totalCount > 0){
+				int sum = 0;
+				for(String duration : durations){
+					sum += Integer.parseInt(duration);
+				}
+				double average = sum / totalCount;
+				System.out.println(path + " Average duration: " + average);
+			}else{
+				System.out.println(path + " Average duration: " + "???");
+			}
 		}
 
 
