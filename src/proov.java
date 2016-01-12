@@ -72,12 +72,12 @@ public class proov {
 		List<String> dates = new ArrayList<String>();
 		//int[][] hoursDurations = new int[24][1]; // can't be empty 0 and 23
 		int[][] hoursAndRequests = new int[24][1];
-		
+
 		List<String> uniqueResources = new ArrayList<>();
 		List<String> uniquePaths = new ArrayList<>();
-		
+
 		List<String> uniquePathsWithResources = new ArrayList<>();
-		
+
 		try {
 			Scanner scanner = new Scanner(file);
 			//System.out.println("Scanner:" + scanner.toString());
@@ -100,7 +100,7 @@ public class proov {
 			//String[] dates; //new String[24];
 			//String[] hours;
 			// [][] date + hour data later on
-			
+
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				//System.out.println("Line: " + lineNr + " :" + line);
@@ -124,31 +124,31 @@ public class proov {
 					uniqueResources.add(resource);
 				}
 				System.out.println("Resource: " + resource);
-				
 
-					URI aURI;
-					try {
-						aURI = new URI(resource);
-						//if(aURL.getProtocol() != null)
-				        //System.out.println("protocol = " + aURL.getProtocol());
-						//if(aURI.getAuthority() != null)
-						//System.out.println("!!!! authority = " + aURI.getAuthority());
-						//if(aURI.getHost() != null)
-						//System.out.println("!!!! host = " + aURI.getHost());
-						//if(aURI.getPort() > 0)
-						//System.out.println("!!!! port = " + aURI.getPort());
-						
-						// Queries (field=name) part of URI
-						
-						// First part of URI
-						if(aURI.getPath() != null){
-							String path = aURI.getPath();
-							System.out.println("!!!! path = " + path);
-							if(!uniquePaths.contains(path)){
-								uniquePaths.add(path);
-							}							
-						}
-						
+
+				URI aURI;
+				try {
+					aURI = new URI(resource);
+					//if(aURL.getProtocol() != null)
+					//System.out.println("protocol = " + aURL.getProtocol());
+					//if(aURI.getAuthority() != null)
+					//System.out.println("!!!! authority = " + aURI.getAuthority());
+					//if(aURI.getHost() != null)
+					//System.out.println("!!!! host = " + aURI.getHost());
+					//if(aURI.getPort() > 0)
+					//System.out.println("!!!! port = " + aURI.getPort());
+
+					// Queries (field=name) part of URI
+
+					// First part of URI
+					if(aURI.getPath() != null){
+						String path = aURI.getPath();
+						System.out.println("!!!! path = " + path);
+						if(!uniquePaths.contains(path)){
+							uniquePaths.add(path);
+						}							
+
+
 						if(aURI.getQuery() != null){
 							String query = aURI.getQuery();
 							System.out.println("!!!! query = " + query);
@@ -156,49 +156,67 @@ public class proov {
 							for (String pair : queryPairs){
 								//int index = pair.indexOf("=");
 								System.out.println("pair is " + pair);
+
+								// SPLITTING PAIR TO FIRST AND SECOND HALF
+								String pairFirstHalf = "";
+								String pairSecondHalf = "";
 								String[] splittedPair = pair.split("=");
 								if(splittedPair.length == 2){
-									String pairFirstHalf = splittedPair[0];
-									String pairSecondHalf = splittedPair[1];
+									pairFirstHalf = splittedPair[0];
+									pairSecondHalf = splittedPair[1];
 									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
 								}
+
+								// PATH + ACTION=blablablabla
+								if(pairFirstHalf.equals("action")){
+									if(!uniquePathsWithResources.contains(path + " " + pair)){
+										uniquePathsWithResources.add(path + " " + pair);
+									}
+								}else{ // PATH
+									if(!uniquePathsWithResources.contains(path)){
+										uniquePathsWithResources.add(path);
+									}
+								}
+
 							}
 						}
-						
 
-						//if(!uniquePathsWithResources.contains(path + " " + )){
-						//	
-						//}
-						
-						//if(aURL.getFile() != null)
-						//System.out.println("filename = " + aURL.getFile());
-						//if(aURL.getRef() != null)
-				        //System.out.println("ref = " + aURL.getRef());
-						
-						
-						
+					}// END FINDING URI PATH
 
-						
-						
-					} catch (URISyntaxException e) {
-						System.out.println("URI SYNTAX EXCEPTION!");
-						e.printStackTrace();
-					}
-					
-				
+
+					//if(!uniquePathsWithResources.contains(path + " " + )){
+					//	
+					//}
+
+					//if(aURL.getFile() != null)
+					//System.out.println("filename = " + aURL.getFile());
+					//if(aURL.getRef() != null)
+					//System.out.println("ref = " + aURL.getRef());
+
+
+
+
+
+
+				} catch (URISyntaxException e) {
+					System.out.println("URI SYNTAX EXCEPTION!");
+					e.printStackTrace();
+				}
+
+
 				// URL = Uniform Resource Locator
 				// = separates name from value
 				// & or ; separate field=value-s, series of items + + +   space is + or %20
 				// # can be used to specify a subsection/fragment of a document
 				// Letters A-Z, a-z, numbers 0-9 and characters * - . _ are left as-is.
-				
+
 				// last) DURATION
 				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
 				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
 				//System.out.println("duration is " + duration);
 
 				System.out.println("[Date: "+ date +"] [Hour: "+ hour +"] [Duration: "+ duration + "]" );
-				
+
 				// row // column // only using 0 for temp KVP
 				//System.out.println("adding hour " + hour + " and duration " + duration);
 				//hoursDurations[hour][0] += duration;
@@ -231,7 +249,7 @@ public class proov {
 				// 5) requested resource name (one string) eg getSubcriptionCampaigns
 				// 6) data payload elements for resource (0..n elements) eg 300109921258
 				// 7) BOOLEAN SOMETHING!? eg true
-				
+
 				// TODO REQUESTS HAVE DURATION (last element), NEED TO CALCULATE AVERAGE DURATION FOR EACH RESOURCE, SORT BY HIGHEST AND GIVE OUT n HIGHEST
 
 				// length-2) string "in"
@@ -241,14 +259,14 @@ public class proov {
 			System.out.println("Scanner error");
 			e.printStackTrace();
 		}
-		
+
 		// PRINTING OUT ALL UNIQUE RESOURCES (130)
 		Collections.sort(uniqueResources);
 		System.out.println("There are " + uniqueResources.size() + " unique resources.");
 		for(String resource : uniqueResources){
 			System.out.println(resource);
 		}
-		
+
 		// PRINTING OUT ALL UNIQUE PATHS (42)
 		Collections.sort(uniquePaths);
 		System.out.println("There are " + uniquePaths.size() + " unique paths.");
@@ -256,11 +274,19 @@ public class proov {
 			System.out.println(path);
 		}
 		
+		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
+		Collections.sort(uniquePathsWithResources);
+		System.out.println("There are " + uniquePathsWithResources.size() + " uniquePathsWithResources.");
+		for(String path : uniquePathsWithResources){
+			System.out.println(path);
+		}
+		
+
 		// for (int i=0; i < array.length; i++) {
 		for(String d : dates){
 			System.out.println("Date is: " + d);
 		}
-		
+
 		String hourAndRequestsAmount = "";
 		for (int i = 0; i < hoursAndRequests.length; i++) {
 			//System.out.println("Hour: " + i);
@@ -269,14 +295,14 @@ public class proov {
 				hourAndRequestsAmount += "0";
 			}
 			hourAndRequestsAmount += i + " ";
-		    for (int j = 0; j < hoursAndRequests[i].length; j++) {
-		        ////System.out.print(hoursDurations[i][j]);
-		    	//System.out.println("Duration: " + hoursDurations[i][0]);
-		    	hourAndRequestsAmount += "Requests: " + hoursAndRequests[i][0];
-		    	System.out.println(hourAndRequestsAmount);
-		    }
+			for (int j = 0; j < hoursAndRequests[i].length; j++) {
+				////System.out.print(hoursDurations[i][j]);
+				//System.out.println("Duration: " + hoursDurations[i][0]);
+				hourAndRequestsAmount += "Requests: " + hoursAndRequests[i][0];
+				System.out.println(hourAndRequestsAmount);
+			}
 		}
-		
+
 		// TODO LOOP THROUGH EACH DAY, HOURS AND REQUESTS,
 		// HIGHEST NUMBER OF REQUESTS PER HOUR (any day!!) IS 100%,
 		// make graphs with xxxxx, scales, legend
