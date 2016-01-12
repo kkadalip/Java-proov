@@ -43,6 +43,10 @@ import java.util.TreeMap;
 //System.out.println("-help, -h              print this message and exit");
 // TEXT, empty space, 16th or 24th letter is text
 
+//System.out.println(getLocalCurrentDate());
+
+//File file = new File("timing.log"); //("file.txt"); FOR DEBUGGING, put into eclipse
+
 // NOTES END: --------------------------------------------------
 
 public class proov {
@@ -51,15 +55,19 @@ public class proov {
 		long startTime = System.currentTimeMillis();
 		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
 		int nNumberFromParams = 0;
+		String logFileNameFromParams = "";
 		// Debug parameter, set true to see debug log in console.
 		boolean debug = false;
+
+		// START ------------- CHECK COMMAND LINE ARGUMENTS ---------------
 
 		// Setting numeric command line argument as n and TODO text argument as file name (or location)
 		if(args.length > 0){
 			if(debug)System.out.println("We have "+ args.length +" command line arguments!");
 			// If user has correct amount of arguments ie one (log file name or location with name) or two (log file and how many average request durations).
 			if(args.length <3){
-				boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?");
+				// Checking for command line arguments -h, -? and -help, if any of them exists in command line arguments, show help menu and stop program.
+				boolean userNeedsHelp = Arrays.asList(args).contains("-help") || Arrays.asList(args).contains("-h") || Arrays.asList(args).contains("-?");
 				if(userNeedsHelp){
 					// Printing help menu:
 					if(debug)System.out.println("User needs help!!!!!");
@@ -69,7 +77,7 @@ public class proov {
 					System.out.println("jarfile,              location of this .jar file");
 					System.out.println("<logfile>,            name or location of log file (without location use same folder as .jar file)");
 					System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
-					// End calculating program run duration:
+					// End calculating program run duration.
 					long endTime   = System.currentTimeMillis();
 					long totalTime = endTime - startTime;
 					System.out.println("Program ran for " + totalTime + " milliseconds.");
@@ -77,11 +85,14 @@ public class proov {
 				}else{
 					if(debug)System.out.println("User doesn't need help.");
 					for(String arg : args){
+						// If a numeric argument is found from command line arguments, assign it as n.
+						// This is good because if user enters n before log location the program will still run correctly.
 						if(isNumeric(arg)){
 							if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
 							nNumberFromParams = Integer.parseInt(arg);
 						}else{
-							if(debug)System.out.println("Command line argument "+ arg +" is not numeric, not using as n.");
+							if(debug)System.out.println("Command line argument "+ arg +" is not numeric, not using as n. Using as log name.");
+							logFileNameFromParams = arg;
 						}
 					}
 				}
@@ -95,16 +106,28 @@ public class proov {
 			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
 			return;
 		}
-
-		// IF WE HAVE LOG LOCATION ARGS AND IT EXISTS (tell user otherwise if it doesn't)
-		System.out.println(getLocalCurrentDate()); // DELETE LATER
-
-		String userDir = System.getProperty("user.dir"); // means C:\Users\karlk\workspace\Java-proov
-		//File file = new File("timing.log"); //("file.txt");
-		File file = new File(userDir + "/timing.log");
-
+		
+		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
+		// START ------------- CHECK LOG FILE LOCATION --------------------
+		
+		// Check if user is entering exact log file location:
+		// eg "java -jar dist/Tulemus-20160112.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
+		String fileDir = "";
+		File file;
+		if(logFileNameFromParams.contains("\\") || logFileNameFromParams.contains("/")){
+			fileDir = logFileNameFromParams;
+			file = new File(fileDir); 
+		}else{
+			// Otherwise assume user is entering log file name that resides in console working directory:
+			fileDir = System.getProperty("user.dir"); // The working directory of console (user dir). (eg C:\Users\karlk\workspace\Java-proov)
+			file = new File(fileDir + "/" + logFileNameFromParams); // eg working directory with parameter timing.log
+		}
+		
+		// END ------------- CHECK LOG FILE LOCATION ---------------
+		// START -----------                         ---------------
+		
 		List<String> dates = new ArrayList<String>();
-		//int[][] hoursDurations = new int[24][1]; // can't be empty 0 and 23
+		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
 		int[][] hoursAndRequests = new int[24][1];
 
 		List<String> uniqueResources = new ArrayList<>();
@@ -117,7 +140,7 @@ public class proov {
 
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
 		// Needs to have average duration calculated and added
-
+		
 		try(Scanner scanner = new Scanner(file)){
 			//Scanner scanner = new Scanner(file);
 			//System.out.println("Scanner:" + scanner.toString());
@@ -322,14 +345,14 @@ public class proov {
 				// 6) data payload elements for resource (0..n elements) eg 300109921258
 				// 7) BOOLEAN SOMETHING!? eg true
 
-				// TODO REQUESTS HAVE DURATION (last element), NEED TO CALCULATE AVERAGE DURATION FOR EACH RESOURCE, SORT BY HIGHEST AND GIVE OUT n HIGHEST
-
 				// length-2) string "in"
 				// length-1) request duration in ms
 			} // END WHILE
 		} catch (FileNotFoundException e) {
-			System.out.println("Scanner error");
-			e.printStackTrace();
+			System.out.println("File not found!");
+			System.out.println(e.getMessage());
+			if(debug)e.printStackTrace();
+			return;
 		}
 
 		// PRINTING OUT ALL UNIQUE RESOURCES (130)
