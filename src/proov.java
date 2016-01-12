@@ -18,7 +18,7 @@ public class proov {
 		// (name of .jar)
 		// location of file
 		// n = 10 (last argument)
-		
+
 		if(args.length > 0){ // we have args!
 			System.out.println("we have args");
 			System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
@@ -33,9 +33,9 @@ public class proov {
 				// -projecthelp, -p
 				// -logfile <file>       use given file for log
 				// -logger <classname>
-			
+
 				// if line is too big, explanation to 2nd line but still same distance
-				
+
 				//System.out.println("-help, -h              print this message and exit");
 				// TEXT, empty space, 16th or 24th letter is text
 				System.out.println("Usage: java -jar jarfile <logfile> [args...]"); // logfile location?
@@ -50,9 +50,9 @@ public class proov {
 				System.out.println("NO HELP NEEDED");
 			}	
 		}
-		
+
 		// IF WE HAVE LOG LOCATION ARGS AND IT EXISTS (tell user otherwise if it doesn't)
-		
+
 		System.out.println("test");
 		System.out.println(getLocalCurrentDate());
 
@@ -60,35 +60,39 @@ public class proov {
 		//File file = new File("timing.log"); //("file.txt");
 		File file = new File(userDir + "/timing.log");
 
+		List<String> dates = new ArrayList<String>();
+		int[][] hoursDurations = new int[24][1]; // can't be empty 0 and 23
+		
 		try {
 			Scanner scanner = new Scanner(file);
 			System.out.println("Scanner:" + scanner.toString());
 
 			// Reading Scanner class lines
 			int lineNr = 1;
-			
+
 			// HOURS ARRAY (FOR HISTOGRAM), X hours. First element 0th, last 23rd if only one 24h period
 			// Pair<Integer, String> myPair = new Pair<>(7, "Seven");
 			// Map<String, String>
 			// Map<String, String[]>
-			
+
 			//Map<String, String[][]> datesAndHours = new HashMap<String, String[][]>();
-			List<String> dates = new ArrayList<String>();
-			
+			//Map<String, String[][]> datesAndHours = new HashMap<String, String[][]>();
+
+
 			//List<String> dates = new ArrayList<String>();
 			//List<String> hours = new ArrayList<String>();
-			
+
 			//String[] dates; //new String[24];
 			//String[] hours;
 			// [][] date + hour data later on
-			
+
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				//System.out.println("Line: " + lineNr + " :" + line);
 				lineNr++;
 				String[] wordsOfLine = line.split(" ");
 				System.out.println("Length: " + wordsOfLine.length + " Line: " + lineNr + " " + line);
-			
+
 				// 1) DATE
 				String date = wordsOfLine[0];
 				//dates.add(date);
@@ -97,52 +101,63 @@ public class proov {
 				//String hour = wordsOfLine[1].split(":")[0];
 				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]);
 				System.out.println("hour is " + hour);
-				
+
 				// last) DURATION
 				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
 				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
 				System.out.println("duration is " + duration);
-				
+
+				// row // column // only using 0 for temp KVP
+				System.out.println("adding hour " + hour + " and duration " + duration);
+				hoursDurations[hour][0] += duration;
+
 				//String[][] hourAndDuration = new String[hour][duration];
 				if(!dates.contains(date)){
 					dates.add(date);
-				//if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
+					//if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
 					//datesAndHours.put(date,)
 					//datesAndHours.put(date, new String[][]);
-				};
-				// for (int i=0; i < array.length; i++) {
-				for(String d : dates){
-					System.out.println("Date is: " + d);
-				}
-				
+				};				
 				//datesAndHours.put(arg0, arg1)
-				
+
 				// 7 or 9
 				// 1) date eg 2015-08-19 // WHAT IF NOT SAME DATE (histogram)? 24h for each date? or just date + add hours?
 				// 2) timestamp eg 00:06:44,560
 				// 3) thread-id (in brackets) eg (http--0.0.0.0-28080-187)
 				// 4) optional user context (in square brackets) eg [USER:300109921258]
-				
+
 				// !!! IF 7
 				// 5) URI + query string 
 
-				
+
 				// !!! IF 8
 				// 5) requested resource name (one string) eg getBroadbandSubscriptions
 				// 6) ??? eg CUS12B1435
-				
+
 				// !!! IF 9
 				// 5) requested resource name (one string) eg getSubcriptionCampaigns
 				// 6) data payload elements for resource (0..n elements) eg 300109921258
 				// 7) BOOLEAN SOMETHING!? eg true
-				
+
 				// length-2) string "in"
 				// length-1) request duration in ms
-
-			}
+			} // END WHILE
 		} catch (FileNotFoundException e) {
 			System.out.println("Scanner error");
 			e.printStackTrace();
+		}
+		
+		// for (int i=0; i < array.length; i++) {
+		for(String d : dates){
+			System.out.println("Date is: " + d);
+		}
+			
+		for (int i = 0; i < hoursDurations.length; i++) {
+			System.out.println("Hour: " + i);
+		    for (int j = 0; j < hoursDurations[i].length; j++) {
+		        //System.out.print(hoursDurations[i][j]);
+		    	System.out.println("Duration: " + hoursDurations[i][0]);
+		    }
 		}
 
 		long endTime   = System.currentTimeMillis();
