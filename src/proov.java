@@ -74,9 +74,12 @@ public class proov {
 		int[][] hoursAndRequests = new int[24][1];
 
 		List<String> uniqueResources = new ArrayList<>();
+		// MAKE DUPLICATE LISTS FOR CONTAINS CASE SENSITIVITY IF NEEDED
 		List<String> uniquePaths = new ArrayList<>();
 
 		List<String> uniquePathsWithResources = new ArrayList<>();
+		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
+		// Needs to have average duration calculated and added
 
 		try {
 			Scanner scanner = new Scanner(file);
@@ -125,7 +128,11 @@ public class proov {
 				}
 				System.out.println("Resource: " + resource);
 
-
+				// last) DURATION
+				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
+				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
+				//System.out.println("duration is " + duration);
+				
 				URI aURI;
 				try {
 					aURI = new URI(resource);
@@ -141,25 +148,25 @@ public class proov {
 					// Queries (field=name) part of URI
 
 					// First part of URI
+					// /main.do&contentId=undefined is wrong because of "&" and won't be split
 					if(aURI.getPath() != null){
 						String path = aURI.getPath();
 						System.out.println("!!!! path = " + path);
 						if(!uniquePaths.contains(path)){
 							uniquePaths.add(path);
-						}							
-
+						}
 
 						if(aURI.getQuery() != null){
 							String query = aURI.getQuery();
 							System.out.println("!!!! query = " + query);
 							String[] queryPairs = query.split("&");
+
+							String pairFirstHalf = "";
+							String pairSecondHalf = "";
 							for (String pair : queryPairs){
 								//int index = pair.indexOf("=");
 								System.out.println("pair is " + pair);
-
 								// SPLITTING PAIR TO FIRST AND SECOND HALF
-								String pairFirstHalf = "";
-								String pairSecondHalf = "";
 								String[] splittedPair = pair.split("=");
 								if(splittedPair.length == 2){
 									pairFirstHalf = splittedPair[0];
@@ -168,18 +175,26 @@ public class proov {
 								}
 
 								// PATH + ACTION=blablablabla
-								if(pairFirstHalf.equals("action")){
+								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
 									if(!uniquePathsWithResources.contains(path + " " + pair)){
 										uniquePathsWithResources.add(path + " " + pair);
 									}
-								}else{ // PATH
-									if(!uniquePathsWithResources.contains(path)){
-										uniquePathsWithResources.add(path);
-									}
 								}
+//								else{ // PATH
+//									if(!uniquePathsWithResources.contains(path)){
+//										uniquePathsWithResources.add(path);
+//									}
+//								}
 
 							}
+						}else{
+							// NO QUERY
+							if(!uniquePathsWithResources.contains(path)){
+								System.out.println("ADDING PATH: " + path);
+								uniquePathsWithResources.add(path);
+							}
 						}
+
 
 					}// END FINDING URI PATH
 
@@ -210,10 +225,7 @@ public class proov {
 				// # can be used to specify a subsection/fragment of a document
 				// Letters A-Z, a-z, numbers 0-9 and characters * - . _ are left as-is.
 
-				// last) DURATION
-				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
-				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
-				//System.out.println("duration is " + duration);
+
 
 				System.out.println("[Date: "+ date +"] [Hour: "+ hour +"] [Duration: "+ duration + "]" );
 
@@ -273,14 +285,14 @@ public class proov {
 		for(String path : uniquePaths){
 			System.out.println(path);
 		}
-		
+
 		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
 		Collections.sort(uniquePathsWithResources);
 		System.out.println("There are " + uniquePathsWithResources.size() + " uniquePathsWithResources.");
 		for(String path : uniquePathsWithResources){
 			System.out.println(path);
 		}
-		
+
 
 		// for (int i=0; i < array.length; i++) {
 		for(String d : dates){
