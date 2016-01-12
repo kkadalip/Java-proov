@@ -75,6 +75,9 @@ public class proov {
 		
 		List<String> uniqueResources = new ArrayList<>();
 		List<String> uniquePaths = new ArrayList<>();
+		
+		List<String> uniquePathsWithResources = new ArrayList<>();
+		
 		try {
 			Scanner scanner = new Scanner(file);
 			//System.out.println("Scanner:" + scanner.toString());
@@ -134,21 +137,46 @@ public class proov {
 						//System.out.println("!!!! host = " + aURI.getHost());
 						//if(aURI.getPort() > 0)
 						//System.out.println("!!!! port = " + aURI.getPort());
+						
+						// Queries (field=name) part of URI
+						
+						// First part of URI
 						if(aURI.getPath() != null){
 							String path = aURI.getPath();
 							System.out.println("!!!! path = " + path);
 							if(!uniquePaths.contains(path)){
 								uniquePaths.add(path);
+							}							
+						}
+						
+						if(aURI.getQuery() != null){
+							String query = aURI.getQuery();
+							System.out.println("!!!! query = " + query);
+							String[] queryPairs = query.split("&");
+							for (String pair : queryPairs){
+								//int index = pair.indexOf("=");
+								System.out.println("pair is " + pair);
+								String[] splittedPair = pair.split("=");
+								if(splittedPair.length == 2){
+									String pairFirstHalf = splittedPair[0];
+									String pairSecondHalf = splittedPair[1];
+									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
+								}
 							}
 						}
 						
-						if(aURI.getQuery() != null)
-						System.out.println("!!!! query = " + aURI.getQuery());
+
+						//if(!uniquePathsWithResources.contains(path + " " + )){
+						//	
+						//}
 						
 						//if(aURL.getFile() != null)
 						//System.out.println("filename = " + aURL.getFile());
 						//if(aURL.getRef() != null)
 				        //System.out.println("ref = " + aURL.getRef());
+						
+						
+						
 
 						
 						
