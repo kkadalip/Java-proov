@@ -19,40 +19,38 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class proov {
+// NOTES START: --------------------------------------------------
+//aks-mbp:dist ak$ java -jar assignment.jar timing.log 10
+// aks-mbp:dist ak$
+// (java -jar)
+// (name of .jar)
+// location of file
+// n = 10 (last argument)
 
+//System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
+//args[0].equals("h")
+// NOTES END: --------------------------------------------------
+
+
+public class proov {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 		int nNumberFromParams = 0;
-		//aks-mbp:dist ak$ java -jar assignment.jar timing.log 10
-		// aks-mbp:dist ak$
-		// (java -jar)
-		// (name of .jar)
-		// location of file
-		// n = 10 (last argument)
+		boolean debug = true;
 
-		if(args.length > 0){ // we have args!
-			System.out.println("we have args");
-			//for(String arg : args){
-			System.out.println("We have " + args.length + " optional parameters aka args.");
-			//for(int i=0; i<args.length; i++){
-			int normalNumber = 1;
-
+		// Setting numeric command line argument as n and TODO text argument as file name (or location)
+		if(args.length > 0){
+			if(debug)System.out.println("We have "+ args.length +" command line arguments!");
 			for(String arg : args){
-				//int normalNumber = i+1;
-				System.out.println("Arg " + normalNumber + " is " + arg);
-				normalNumber++;
 				if(isNumeric(arg)){
-					System.out.println("arg is numeric, use as n: " + arg);
+					if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
 					nNumberFromParams = Integer.parseInt(arg);
 				}else{
-					System.out.println("arg is not numeric, do not use as n");
+					if(debug)System.out.println("Command line argument "+ arg +" is not numeric, not using as n.");
 				}
 			}
 
-			//System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
-			// args[0].equals("h")
-			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?"); // ? and help should be as well
+			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?");
 			if(userNeedsHelp){
 				System.out.println("user needs help!!!!!");
 				// ant [options] [target [target2 [target3] ...]]
@@ -404,7 +402,6 @@ public class proov {
 		for(String d : dates){
 			System.out.println("Date is: " + d);
 		}
-
 
 		String hourAndRequestsAmount = "";
 		for (int i = 0; i < hoursAndRequests.length; i++) {
