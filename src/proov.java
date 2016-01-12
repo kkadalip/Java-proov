@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class proov {
 			System.out.println("We have " + args.length + " optional parameters aka args.");
 			//for(int i=0; i<args.length; i++){
 			int normalNumber = 1;
-			
+
 			for(String arg : args){
 				//int normalNumber = i+1;
 				System.out.println("Arg " + normalNumber + " is " + arg);
@@ -48,7 +49,7 @@ public class proov {
 					System.out.println("arg is not numeric, do not use as n");
 				}
 			}
-			
+
 			//System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
 			// args[0].equals("h")
 			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?"); // ? and help should be as well
@@ -101,8 +102,8 @@ public class proov {
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
 		// Needs to have average duration calculated and added
 
-		try {
-			Scanner scanner = new Scanner(file);
+		try(Scanner scanner = new Scanner(file)){
+			//Scanner scanner = new Scanner(file);
 			//System.out.println("Scanner:" + scanner.toString());
 
 			// Reading Scanner class lines
@@ -146,7 +147,7 @@ public class proov {
 				if(!uniqueResources.contains(resource)){
 					uniqueResources.add(resource);
 				}
-//				System.out.println("Resource: " + resource);
+				//				System.out.println("Resource: " + resource);
 
 				// last) DURATION
 				String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
@@ -171,28 +172,28 @@ public class proov {
 					// /main.do&contentId=undefined is wrong because of "&" and won't be split
 					if(aURI.getPath() != null){
 						String path = aURI.getPath();
-//						System.out.println("!!!! path = " + path);
+						//						System.out.println("!!!! path = " + path);
 						if(!uniquePaths.contains(path)){
 							uniquePaths.add(path);
 						}
 						String extraQueryParts = ""; // IMPORTANT!!!
 						if(aURI.getQuery() != null){
 							String query = aURI.getQuery();
-//							System.out.println("!!!! query = " + query);
+							//							System.out.println("!!!! query = " + query);
 							String[] queryPairs = query.split("&");
 
 							String pairFirstHalf = "";
-							String pairSecondHalf = "";
+							//String pairSecondHalf = ""; // Maybe needed later
 							String[] splittedPair = null;
 							for (String pair : queryPairs){
 								//int index = pair.indexOf("=");
-//								System.out.println("pair is " + pair);
+								//								System.out.println("pair is " + pair);
 								// SPLITTING PAIR TO FIRST AND SECOND HALF
 								splittedPair = pair.split("=");
 								if(splittedPair.length == 2){
 									pairFirstHalf = splittedPair[0];
-									pairSecondHalf = splittedPair[1];
-//									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
+									//pairSecondHalf = splittedPair[1]; // Maybe needed later
+									//									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
 								}
 								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId") || pairFirstHalf.equals("category")){
 									extraQueryParts += (pair + " ");
@@ -316,30 +317,30 @@ public class proov {
 		}
 
 		// PRINTING OUT ALL UNIQUE RESOURCES (130)
-//		Collections.sort(uniqueResources);
-//		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
-//		for(String resource : uniqueResources){
-//			System.out.println(resource);
-//		}
+		//		Collections.sort(uniqueResources);
+		//		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
+		//		for(String resource : uniqueResources){
+		//			System.out.println(resource);
+		//		}
 
 		// PRINTING OUT ALL UNIQUE PATHS (42)
-//		Collections.sort(uniquePaths);
-//		System.out.println("------------------------ There are " + uniquePaths.size() + " unique paths.");
-//		for(String path : uniquePaths){
-//			System.out.println(path);
-//		}
+		//		Collections.sort(uniquePaths);
+		//		System.out.println("------------------------ There are " + uniquePaths.size() + " unique paths.");
+		//		for(String path : uniquePaths){
+		//			System.out.println(path);
+		//		}
 
 		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
-//		Collections.sort(uniquePathsWithResources);
-//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources. (FIXED?)");
-//		for(String path : uniquePathsWithResources){
-//			System.out.println(path);
-//		}
-		
+		//		Collections.sort(uniquePathsWithResources);
+		//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources. (FIXED?)");
+		//		for(String path : uniquePathsWithResources){
+		//			System.out.println(path);
+		//		}
+
 		// SAME THING WITH MAP AND KVP-s!!!!
 		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
-//		Collections.sort(uniquePathsWithResources);
-//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources MAP");
+		//		Collections.sort(uniquePathsWithResources);
+		//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources MAP");
 		// Keys are paths + important query parts
 		// values are lists of durations, now I can calculate average
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
@@ -394,11 +395,11 @@ public class proov {
 			sortedResultsHeader += "(Showing " + sortedMap.size() + " results)";
 		}
 		System.out.println(sortedResultsHeader);
-		
+
 		//printMap(sortedMap, Optional.empty());
 		//printMap(sortedMap, Optional.of(1000)); nNumberFromParams
 		printMap(sortedMap, nNumberFromParams);
-		
+
 		// for (int i=0; i < array.length; i++) {
 		for(String d : dates){
 			System.out.println("Date is: " + d);
@@ -470,16 +471,17 @@ public class proov {
 		//			System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
 		//		}
 		NumberFormat formatter = new DecimalFormat("#0000.00");
+		int counter = 0;
 		if(n > 0){
-			int counter = 0;
+			//int counter = 0;
 			if(n > map.entrySet().size()){
 				n = map.entrySet().size();
 			}
 			for (Map.Entry<String, Double> entry : map.entrySet()) {
 				if(counter<n){
-					// Value is average duration, Key is path with selected queries
-					System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
+					// Value is average duration, Key is path with selected queries					
 					counter++;
+					System.out.println(counter + ". ["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
 				}else{
 					break;
 				}
@@ -487,22 +489,27 @@ public class proov {
 		}else{
 			for (Map.Entry<String, Double> entry : map.entrySet()) {
 				// Value is average duration, Key is path with selected queries
-				System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
+				counter++;
+				System.out.println(counter + ". ["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
 			}
 		}
 	}
-	
+
 	// TO CHECK IF command line ARGUMENT IS NUMBER OR NOT (for n amount of highest)
 	public static boolean isNumeric(String str)  
 	{  
-	  try  
-	  {  
-	    double d = Double.parseDouble(str);  
-	  }  
-	  catch(NumberFormatException nfe)  
-	  {  
-	    return false;  
-	  }  
-	  return true;  
+		NumberFormat formatter = NumberFormat.getInstance();
+		ParsePosition pos = new ParsePosition(0);
+		formatter.parse(str, pos);
+		return str.length() == pos.getIndex();
+		//	  try  
+		//	  {  
+		//	    double d = Double.parseDouble(str);  
+		//	  }  
+		//	  catch(NumberFormatException nfe)  
+		//	  {  
+		//	    return false;  
+		//	  }  
+		//	  return true;  
 	}
 }
