@@ -73,6 +73,7 @@ public class proov {
 		int[][] hoursAndRequests = new int[24][1];
 		
 		List<String> uniqueResources = new ArrayList<>();
+		List<String> uniquePaths = new ArrayList<>();
 		try {
 			Scanner scanner = new Scanner(file);
 			//System.out.println("Scanner:" + scanner.toString());
@@ -126,21 +127,30 @@ public class proov {
 						aURI = new URI(resource);
 						//if(aURL.getProtocol() != null)
 				        //System.out.println("protocol = " + aURL.getProtocol());
-						if(aURI.getAuthority() != null)
-						System.out.println("!!!! authority = " + aURI.getAuthority());
-						if(aURI.getHost() != null)
-						System.out.println("!!!! host = " + aURI.getHost());
-						if(aURI.getPort() > 0)
-						System.out.println("!!!! port = " + aURI.getPort());
-						if(aURI.getPath() != null)
-						System.out.println("!!!!path = " + aURI.getPath());
+						//if(aURI.getAuthority() != null)
+						//System.out.println("!!!! authority = " + aURI.getAuthority());
+						//if(aURI.getHost() != null)
+						//System.out.println("!!!! host = " + aURI.getHost());
+						//if(aURI.getPort() > 0)
+						//System.out.println("!!!! port = " + aURI.getPort());
+						if(aURI.getPath() != null){
+							String path = aURI.getPath();
+							System.out.println("!!!! path = " + path);
+							if(!uniquePaths.contains(path)){
+								uniquePaths.add(path);
+							}
+						}
+						
 						if(aURI.getQuery() != null)
 						System.out.println("!!!! query = " + aURI.getQuery());
+						
 						//if(aURL.getFile() != null)
 						//System.out.println("filename = " + aURL.getFile());
 						//if(aURL.getRef() != null)
 				        //System.out.println("ref = " + aURL.getRef());
 
+						
+						
 					} catch (URISyntaxException e) {
 						System.out.println("URI SYNTAX EXCEPTION!");
 						e.printStackTrace();
@@ -203,9 +213,16 @@ public class proov {
 			e.printStackTrace();
 		}
 		
-		System.out.println("There are " + uniqueResources.size() + " unique resources."); // ~130
+		// PRINTING OUT ALL UNIQUE RESOURCES (130)
+		System.out.println("There are " + uniqueResources.size() + " unique resources.");
 		for(String resource : uniqueResources){
 			System.out.println(resource);
+		}
+		
+		// PRINTING OUT ALL UNIQUE PATHS (42)
+		System.out.println("There are " + uniquePaths.size() + " unique paths.");
+		for(String path : uniquePaths){
+			System.out.println(path);
 		}
 		
 		// for (int i=0; i < array.length; i++) {
