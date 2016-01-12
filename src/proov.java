@@ -440,14 +440,16 @@ public class proov {
 				// COLUMNS:
 				for(int element = 0; element < hoursAndData[row].length; element++){
 					//System.out.printf("Row: %d Element: %d Value: %d\n", row, element, container[row][element]);
-					if(row < 10){
-						//System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
-						System.out.println("[Hour: 0"+ row + "] [Requests: " + hoursAndData[row][element] +"]");
-					}else{
-						//System.out.println("[Hour: "+ row + "] [Requests: " + element +"]");
-						System.out.println("[Hour: "+ row + "] [Requests: " + hoursAndData[row][element] +"]");
+					int requestsAmount = hoursAndData[row][element];
+					if(requestsAmount > 0){
+						if(row < 10){
+							//System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
+							System.out.println("[Hour: 0"+ row + "] [Requests: " + requestsAmount +"]");
+						}else{
+							//System.out.println("[Hour: "+ row + "] [Requests: " + element +"]");
+							System.out.println("[Hour: "+ row + "] [Requests: " + requestsAmount +"]");
+						}
 					}
-
 				}
 			}
 
