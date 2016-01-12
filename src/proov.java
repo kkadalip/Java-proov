@@ -89,26 +89,28 @@ public class proov {
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				//System.out.println("Line: " + lineNr + " :" + line);
-				lineNr++;
 				String[] wordsOfLine = line.split(" ");
-				System.out.println("Length: " + wordsOfLine.length + " Line: " + lineNr + " " + line);
+				System.out.println("("+lineNr+")(Length: " + wordsOfLine.length + " Line: " + line);
+				lineNr++;				
 
 				// 1) DATE
 				String date = wordsOfLine[0];
 				//dates.add(date);
-				System.out.println("date is " + date);
+				//System.out.println("date is " + date);
 				// 2) TIMESTAMP (I need hour)
 				//String hour = wordsOfLine[1].split(":")[0];
 				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]);
-				System.out.println("hour is " + hour);
+				//System.out.println("hour is " + hour);
 
 				// last) DURATION
 				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
 				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
-				System.out.println("duration is " + duration);
+				//System.out.println("duration is " + duration);
 
+				System.out.println("[Date: "+ date +"] [Hour: "+ hour +"] [Duration: "+ duration + "]" );
+				
 				// row // column // only using 0 for temp KVP
-				System.out.println("adding hour " + hour + " and duration " + duration);
+				//System.out.println("adding hour " + hour + " and duration " + duration);
 				hoursDurations[hour][0] += duration;
 
 				//String[][] hourAndDuration = new String[hour][duration];
