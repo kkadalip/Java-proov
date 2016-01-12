@@ -4,14 +4,21 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class proov {
 
@@ -327,8 +334,11 @@ public class proov {
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
 
+		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
+
 		double totalCount = 0.0;
 		int sum = 0;
+		System.out.println("[Average duration][Request]");
 		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()) { // KEY AND VALUE
 			String path = entry.getKey();
 			List<String> durations = entry.getValue();
@@ -342,16 +352,35 @@ public class proov {
 				} // INNER FOR END
 				//System.out.println("sum is " + sum + " totalcount is " + totalCount);
 				double average = sum / totalCount;
-				System.out.println(path + " Average duration: " + Math.round(average * 100d) / 100d + " ms.");
+				NumberFormat formatter = new DecimalFormat("#0000.00");
+				// Formatter does the rounding for me!
+				System.out.println("["+formatter.format(average)+"ms] " + path);
+				//System.out.println("["+Math.round(average * 100d) / 100d + "ms]" + path);
+				//pathsWithAverageDuration.put(path, Double.toString(average));
+				pathsWithAverageDuration.put(path, average);
 			}else{
 				System.out.println(path + " Average duration: " + "??? ms.");
 			}
 		} // FOR END
 
+		// TODO CREATE A NEW KVP String String Map to sort the path + duration.
+		// TODO Then use command line optional parameter to display top n amount.
+		System.out.println("----PRINTING MAP!");
+		//printMap(pathsWithAverageDuration);
+
+		// To sort Map by keys, use TreeMap
+		// TreeMap is unable to sort the Map values, instead, we should use Comparator
+		// Convert Map to List, sort list by Comparator, put list back to Map
+		// Map ---> List ---> Sort --> SortedList ---> Map
+
+		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
+		printMap(sortedMap);
+
 		// for (int i=0; i < array.length; i++) {
 		for(String d : dates){
 			System.out.println("Date is: " + d);
 		}
+
 
 		String hourAndRequestsAmount = "";
 		for (int i = 0; i < hoursAndRequests.length; i++) {
@@ -380,5 +409,37 @@ public class proov {
 
 	private static Date getLocalCurrentDate() {
 		return new Date();
+	}
+
+	private static Map<String, Double> sortByComparator(Map<String, Double> unsortMap) {
+
+		// Convert Map to List
+		List<Map.Entry<String, Double>> list = 
+				new LinkedList<Map.Entry<String, Double>>(unsortMap.entrySet());
+
+		// Sort list with comparator, to compare the Map values
+		Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
+			public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
+				return (o2.getValue()).compareTo(o1.getValue());
+			}
+		});
+
+		// Convert sorted map back to a Map
+		Map<String, Double> sortedMap = new LinkedHashMap<String, Double>();
+		for (Iterator<Map.Entry<String, Double>> it = list.iterator(); it.hasNext();) {
+			Map.Entry<String, Double> entry = it.next();
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedMap;
+	}
+
+	public static void printMap(Map<String, Double> map) {
+		for (Map.Entry<String, Double> entry : map.entrySet()) {
+			//System.out.println("Key : " + entry.getKey() 
+			//+ " Value : " + entry.getValue());
+			NumberFormat formatter = new DecimalFormat("#0000.00");
+			// Value is average duration, Key is path with selected queries
+			System.out.println("["+formatter.format(entry.getValue())+"ms] "+entry.getKey());
+		}
 	}
 }
