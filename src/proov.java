@@ -1,5 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -115,6 +119,34 @@ public class proov {
 					uniqueResources.add(resource);
 				}
 				System.out.println("Resource: " + resource);
+				
+
+					URI aURI;
+					try {
+						aURI = new URI(resource);
+						//if(aURL.getProtocol() != null)
+				        //System.out.println("protocol = " + aURL.getProtocol());
+						if(aURI.getAuthority() != null)
+						System.out.println("!!!! authority = " + aURI.getAuthority());
+						if(aURI.getHost() != null)
+						System.out.println("!!!! host = " + aURI.getHost());
+						if(aURI.getPort() > 0)
+						System.out.println("!!!! port = " + aURI.getPort());
+						if(aURI.getPath() != null)
+						System.out.println("!!!!path = " + aURI.getPath());
+						if(aURI.getQuery() != null)
+						System.out.println("!!!! query = " + aURI.getQuery());
+						//if(aURL.getFile() != null)
+						//System.out.println("filename = " + aURL.getFile());
+						//if(aURL.getRef() != null)
+				        //System.out.println("ref = " + aURL.getRef());
+
+					} catch (URISyntaxException e) {
+						System.out.println("URI SYNTAX EXCEPTION!");
+						e.printStackTrace();
+					}
+					
+				
 				// URL = Uniform Resource Locator
 				// = separates name from value
 				// & or ; separate field=value-s, series of items + + +   space is + or %20
@@ -171,7 +203,7 @@ public class proov {
 			e.printStackTrace();
 		}
 		
-		System.out.println("There are " + uniqueResources.size() + " unique resources.");
+		System.out.println("There are " + uniqueResources.size() + " unique resources."); // ~130
 		for(String resource : uniqueResources){
 			System.out.println(resource);
 		}
