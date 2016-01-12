@@ -72,7 +72,8 @@ public class proov {
 			// Map<String, String>
 			// Map<String, String[]>
 			
-			Map<String, String[]> datesAndHours = new HashMap<String, String[]>();
+			//Map<String, String[][]> datesAndHours = new HashMap<String, String[][]>();
+			List<String> dates = new ArrayList<String>();
 			
 			//List<String> dates = new ArrayList<String>();
 			//List<String> hours = new ArrayList<String>();
@@ -103,9 +104,17 @@ public class proov {
 				System.out.println("duration is " + duration);
 				
 				//String[][] hourAndDuration = new String[hour][duration];
-				if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
+				if(!dates.contains(date)){
+					dates.add(date);
+				//if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
 					//datesAndHours.put(date,)
+					//datesAndHours.put(date, new String[][]);
 				};
+				// for (int i=0; i < array.length; i++) {
+				for(String d : dates){
+					System.out.println("Date is: " + d);
+				}
+				
 				//datesAndHours.put(arg0, arg1)
 				
 				// 7 or 9
