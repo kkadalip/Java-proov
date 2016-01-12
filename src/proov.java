@@ -95,7 +95,7 @@ public class proov {
 				String line = scanner.nextLine();
 				//System.out.println("Line: " + lineNr + " :" + line);
 				String[] wordsOfLine = line.split(" ");
-				System.out.println("("+lineNr+")(Length: " + wordsOfLine.length + " Line: " + line);
+				System.out.println("("+lineNr+") Length: " + wordsOfLine.length + " Line: " + line);
 				lineNr++;				
 
 				// 1) DATE
@@ -106,7 +106,12 @@ public class proov {
 				//String hour = wordsOfLine[1].split(":")[0];
 				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]);
 				//System.out.println("hour is " + hour);
-
+				// 3) THREAD
+				// 4) OPTIONAL USER CONTEXT
+				// 5) RESOURCE
+				String resource = wordsOfLine[4];
+				System.out.println("Resource: " + resource);
+				
 				// last) DURATION
 				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
 				int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
@@ -165,7 +170,7 @@ public class proov {
 		String hourAndRequestsAmount = "";
 		for (int i = 0; i < hoursAndRequests.length; i++) {
 			//System.out.println("Hour: " + i);
-			hourAndRequestsAmount = "Hour : "; // + i + " ";
+			hourAndRequestsAmount = "Hour: "; // + i + " ";
 			if(i < 10){
 				hourAndRequestsAmount += "0";
 			}
@@ -173,10 +178,14 @@ public class proov {
 		    for (int j = 0; j < hoursAndRequests[i].length; j++) {
 		        ////System.out.print(hoursDurations[i][j]);
 		    	//System.out.println("Duration: " + hoursDurations[i][0]);
-		    	hourAndRequestsAmount += "Amount of requests: " + hoursAndRequests[i][0];
+		    	hourAndRequestsAmount += "Requests: " + hoursAndRequests[i][0];
 		    	System.out.println(hourAndRequestsAmount);
 		    }
 		}
+		
+		// TODO LOOP THROUGH EACH DAY, HOURS AND REQUESTS,
+		// HIGHEST NUMBER OF REQUESTS PER HOUR (any day!!) IS 100%,
+		// make graphs with xxxxx, scales, legend
 
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
