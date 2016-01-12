@@ -68,6 +68,7 @@ public class proov {
 		//int[][] hoursDurations = new int[24][1]; // can't be empty 0 and 23
 		int[][] hoursAndRequests = new int[24][1];
 		
+		List<String> uniqueResources = new ArrayList<>();
 		try {
 			Scanner scanner = new Scanner(file);
 			//System.out.println("Scanner:" + scanner.toString());
@@ -90,7 +91,7 @@ public class proov {
 			//String[] dates; //new String[24];
 			//String[] hours;
 			// [][] date + hour data later on
-
+			
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				//System.out.println("Line: " + lineNr + " :" + line);
@@ -110,7 +111,15 @@ public class proov {
 				// 4) OPTIONAL USER CONTEXT
 				// 5) RESOURCE
 				String resource = wordsOfLine[4];
+				if(!uniqueResources.contains(resource)){
+					uniqueResources.add(resource);
+				}
 				System.out.println("Resource: " + resource);
+				// URL = Uniform Resource Locator
+				// = separates name from value
+				// & or ; separate field=value-s, series of items + + +   space is + or %20
+				// # can be used to specify a subsection/fragment of a document
+				// Letters A-Z, a-z, numbers 0-9 and characters * - . _ are left as-is.
 				
 				// last) DURATION
 				//String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
@@ -160,6 +169,11 @@ public class proov {
 		} catch (FileNotFoundException e) {
 			System.out.println("Scanner error");
 			e.printStackTrace();
+		}
+		
+		System.out.println("There are " + uniqueResources.size() + " unique resources.");
+		for(String resource : uniqueResources){
+			System.out.println(resource);
 		}
 		
 		// for (int i=0; i < array.length; i++) {
