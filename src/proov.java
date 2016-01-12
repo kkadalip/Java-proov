@@ -21,6 +21,12 @@ public class proov {
 
 		if(args.length > 0){ // we have args!
 			System.out.println("we have args");
+			//for(String arg : args){
+			System.out.println("We have " + args.length + " optional parameters aka args.");
+			for(int i=0; i<args.length; i++){
+				int normalNumber = i+1;
+				System.out.println("Arg " + normalNumber + " is " + args[i]);
+			}
 			System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
 			// args[0].equals("h")
 			boolean userNeedsHelp = Arrays.asList(args).contains("help") || Arrays.asList(args).contains("h") || Arrays.asList(args).contains("?"); // ? and help should be as well
@@ -52,9 +58,7 @@ public class proov {
 		}
 
 		// IF WE HAVE LOG LOCATION ARGS AND IT EXISTS (tell user otherwise if it doesn't)
-
-		System.out.println("test");
-		System.out.println(getLocalCurrentDate());
+		System.out.println(getLocalCurrentDate()); // DELETE LATER
 
 		String userDir = System.getProperty("user.dir"); // means C:\Users\karlk\workspace\Java-proov
 		//File file = new File("timing.log"); //("file.txt");
@@ -65,7 +69,7 @@ public class proov {
 		
 		try {
 			Scanner scanner = new Scanner(file);
-			System.out.println("Scanner:" + scanner.toString());
+			//System.out.println("Scanner:" + scanner.toString());
 
 			// Reading Scanner class lines
 			int lineNr = 1;
