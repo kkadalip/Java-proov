@@ -603,5 +603,4 @@ public class Assignment {
 		formatter.parse(str, pos);
 		return str.length() == pos.getIndex();
 	}
-	
 } // END CLASS
