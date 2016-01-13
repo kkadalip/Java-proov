@@ -552,26 +552,33 @@ public class proov {
 		}
 		// MAX WRONG BECAUSE THIS IS NOT DIVIDED BY INSTANCE AMOUNT?
 		double avgRequests = 0;
-		double maxRequestsInHour = 0;
+		//double maxRequestsInHour = 0;
+		int totalAmountOfRequests = 0;
+
 		for(int i=0; i<averageRequestsPerHour.length; i++){
 			double tmp = averageRequestsPerHour[i][0];
-			if(tmp > maxRequestsInHour){
-				maxRequestsInHour = tmp;
-			}
+			totalAmountOfRequests += tmp;
+			//if(tmp > maxRequestsInHour){
+			//	maxRequestsInHour = tmp;
+			//}
 		}
 		DecimalFormat df = new DecimalFormat("000.00");
-		System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour));
+		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour));
 		// Max avg dur is 100%
 		String histogramBoxes = "";
 		double percentage = 0;
 		//double roundedPercentage = 0;
 		
 		int howManyBoxesFilled = 0;
+		
 		for(int i=0; i<24; i++){
 			//System.out.println("hoursAndAverageDurations rows are " + hoursAndAverageDurations[i][0]);
 			avgRequests = averageRequestsPerHour[i][0];
 			//System.out.println("avg dur " + avgDuration + " / " + " max dur " + maxAvgDuration + " * 100");
-			percentage = avgRequests / maxRequestsInHour * 100;
+			//percentage = avgRequests / maxRequestsInHour * 100;
+			percentage = avgRequests / totalAmountOfRequests * 100;
+			// TAKE ALL TOTAL AMOUNT INTO ACCOUNT
+			
 			//System.out.println("percentage is " + percentage);
 			// 78 / 10
 			// is 7.8
