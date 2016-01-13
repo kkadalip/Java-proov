@@ -31,7 +31,7 @@ public class Assignment {
 
 		// START ------------- CHECKING COMMAND LINE ARGUMENTS ---------------
 
-		// Setting numeric command line argument as n and TODO text argument as file name (or location)
+		// Setting numeric command line argument as n, text argument as file location/name
 		if(args.length > 0){
 			if(debug)System.out.println("We have "+ args.length +" command line arguments!");
 			// If user has correct amount of arguments ie one (log file name or location with name) or two (log file and how many average request durations).
@@ -84,7 +84,7 @@ public class Assignment {
 		// START ------------- CHECK LOG FILE LOCATION --------------------
 
 		// Check if user is entering exact log file location:
-		// eg "java -jar dist/Result-20160112.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
+		// eg "java -jar dist/Assignment.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
 		String fileDir = "";
 		File file;
 		// No "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
@@ -92,6 +92,7 @@ public class Assignment {
 			logFileNameFromParams += ".log";
 		}
 
+		// Log file parameter contains slashes, this means that user is trying to give exact location
 		if(logFileNameFromParams.contains("\\") || logFileNameFromParams.contains("/")){
 			fileDir = logFileNameFromParams;
 			file = new File(fileDir); 
@@ -104,19 +105,18 @@ public class Assignment {
 		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
-		// DATE, [HOURS][HOUR DATA ie requests in one hour] TreeMap so it would be sorted.
+		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg List<String> dates = new ArrayList<String>(); 
+		// NOTE: Make duplicate lists for checking case sensitive items if necessary.
+		
+		// <DATE><[HOUR] [DATA ie requests in one hour]> TreeMap so it would be sorted.
 		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>();
-		// LIST FOR STORING ALL DATES
-		//List<String> dates = new ArrayList<String>(); 
+		
 		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
 		int[][] hoursAndRequests = new int[24][1];
 
-		List<String> uniqueResources = new ArrayList<>();
-		// MAKE DUPLICATE LISTS FOR CONTAINS CASE SENSITIVITY IF NEEDED
 		List<String> uniquePaths = new ArrayList<>();
-
+		List<String> uniqueResources = new ArrayList<>();
 		List<String> uniquePathsWithResources = new ArrayList<>();
-
 		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
 
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
@@ -127,14 +127,19 @@ public class Assignment {
 			int lineNrCounter = 1;
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
+				
+				// Each line consists of either:
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [URI + query string] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:00:02,814 (http--0.0.0.0-28080-245) [CUST:CUS5T27233] /substypechange.do?msisdn=300501633574 in 17
+				// OR
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [requested resource name (one string)] [data payload elements for resource (0..n elements)] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:04:45,212 (http--0.0.0.0-28080-405) [] updateSubscriptionFromBackend 300445599231 in 203
 				
+				// Splitting each line to smaller components using empty spaces between words.
 				String[] wordsOfLine = line.split(" ");
+				// If debug is enabled, printing out line number counter, how many components the line consists of (usually 7 to 9), printing out original line.
 				if(debug)System.out.println("(Line:"+lineNrCounter+") Length: " + wordsOfLine.length + " Line: " + line);
-				lineNrCounter++;			
+				lineNrCounter++;	
 
 				// 1) DATE
 				String date = wordsOfLine[0];
