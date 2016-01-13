@@ -141,28 +141,18 @@ public class Assignment {
 
 				// 1) DATE
 				String date = wordsOfLine[0]; 
-				//uniqueDates.add(date); // For debugging to see all unique dates
+				//if(!uniqueDates.contains(date)){uniqueDates.add(date);} // For debugging to print out all unique dates
 				// 2) TIMESTAMP (I need hour). Getting it from the first part of example 00:04:45,212.
-				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]); 
+				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]);
 				// 3) THREAD - not needed
 				// 4) OPTIONAL USER CONTEXT - not needed
 				// 5) URI + query string OR RESOURCE
 				String resource = wordsOfLine[4];
-				
-				if(debug)System.out.println("1) Date is " + date + " 2) Hour is " + hour + "5) URI+query/Resource " + resource);
-				
-				/*
-				if(!uniqueResources.contains(resource)){
-					uniqueResources.add(resource);
-				}
-				*/
-				
-				//				System.out.println("Resource: " + resource);
-
-				// last) DURATION
-				String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
+				//if(!uniqueResources.contains(resource)){uniqueResources.add(resource);} // For debugging to print out all unique resources
+				// last ie 7th 8th 9th) DURATION in milliseconds
 				//int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
-				//System.out.println("duration is " + duration);
+				String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
+				if(debug)System.out.println("[1)Date: " + date + "] [2)Hour: " + hour + "] [5)URI+query/Resource: " + resource + "] [last) Duration: " + duration + "]");
 
 				URI aURI;
 				try {
