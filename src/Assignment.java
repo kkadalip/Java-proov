@@ -213,22 +213,12 @@ public class Assignment {
 							uniquePathsWithResourcesMap.get(path + " " + extraQueryParts).add(duration);
 						}
 					}// END FINDING URI PATH (aURI.getPath() != null)
-					
-					// ----------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
-
-					//if(!uniquePathsWithResources.contains(path + " " + )){
-					//	
-					//}
-
-					//if(aURL.getFile() != null)
-					//System.out.println("filename = " + aURL.getFile());
-					//if(aURL.getRef() != null)
-					//System.out.println("ref = " + aURL.getRef());
-
-				} catch (URISyntaxException e) {
-					System.out.println("URI SYNTAX EXCEPTION!");
-					e.printStackTrace();
+				}catch (URISyntaxException e) {
+					System.err.println("Caught URI syntax exception: " + e.getMessage());
+					if(debug)e.printStackTrace();
 				}
+				
+				// ----------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 
 				// URL = Uniform Resource Locator
 				// = separates name from value
@@ -310,9 +300,8 @@ public class Assignment {
 				// length-2) string "in"
 				// length-1) request duration in ms
 			} // END WHILE
-		} catch (FileNotFoundException e) {
-			System.out.println("File not found!");
-			System.out.println(e.getMessage());
+		}catch(FileNotFoundException e){
+			System.err.println("File not found exception: " + e.getMessage());
 			if(debug)e.printStackTrace();
 			return;
 		}
