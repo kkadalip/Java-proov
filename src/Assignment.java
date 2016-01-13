@@ -105,7 +105,6 @@ public class Assignment {
 		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
-<<<<<<< HEAD
 		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg 
 		// NOTE: Make duplicate lists for checking case sensitive items if necessary.
 		
@@ -117,22 +116,6 @@ public class Assignment {
 		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>(); 
 		// [Hours per day] [Request amount per hour] (NB! First element 0, last 23 for rows)
 		int[][] hoursAndRequests = new int[24][1]; 
-=======
-		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg List<String> dates = new ArrayList<String>(); 
-		// NOTE: Make duplicate lists for checking case sensitive items if necessary.
-		
-		// <DATE><[HOUR] [DATA ie requests in one hour]> TreeMap so it would be sorted.
-		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>();
-		
-		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
-		int[][] hoursAndRequests = new int[24][1];
-
-		List<String> uniquePaths = new ArrayList<>();
-		List<String> uniqueResources = new ArrayList<>();
-		List<String> uniquePathsWithResources = new ArrayList<>();
-		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
-
->>>>>>> branch 'master' of https://github.com/kkadalip/Java-proov.git
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
 		//List<String> uniquePathsWithResources = new ArrayList<>(); // Replaced this with Map, redundant
 		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
@@ -143,11 +126,7 @@ public class Assignment {
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				
-<<<<<<< HEAD
 				// Each line consists of either: (NOTE: log usually has 7 to 9 parts per line)
-=======
-				// Each line consists of either:
->>>>>>> branch 'master' of https://github.com/kkadalip/Java-proov.git
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [URI + query string] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:00:02,814 (http--0.0.0.0-28080-245) [CUST:CUS5T27233] /substypechange.do?msisdn=300501633574 in 17
 				// OR
@@ -158,11 +137,7 @@ public class Assignment {
 				String[] wordsOfLine = line.split(" ");
 				// If debug is enabled, printing out line number counter, how many components the line consists of (usually 7 to 9), printing out original line.
 				if(debug)System.out.println("(Line:"+lineNrCounter+") Length: " + wordsOfLine.length + " Line: " + line);
-<<<<<<< HEAD
 				lineNrCounter++;
-=======
-				lineNrCounter++;	
->>>>>>> branch 'master' of https://github.com/kkadalip/Java-proov.git
 
 				// 1) DATE eg 2015-08-19
 				String date = wordsOfLine[0]; 
