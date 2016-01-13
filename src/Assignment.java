@@ -126,7 +126,7 @@ public class Assignment {
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				
-				// Each line consists of either:
+				// Each line consists of either: (NOTE: log usually has 7 to 9 parts per line)
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [URI + query string] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:00:02,814 (http--0.0.0.0-28080-245) [CUST:CUS5T27233] /substypechange.do?msisdn=300501633574 in 17
 				// OR
@@ -139,21 +139,31 @@ public class Assignment {
 				if(debug)System.out.println("(Line:"+lineNrCounter+") Length: " + wordsOfLine.length + " Line: " + line);
 				lineNrCounter++;
 
-				// 1) DATE
+				// 1) DATE eg 2015-08-19
 				String date = wordsOfLine[0]; 
-				//if(!uniqueDates.contains(date)){uniqueDates.add(date);} // For debugging to print out all unique dates
+				//if(!uniqueDates.contains(date)){uniqueDates.add(date);} // (DEBUG) For debugging to print out all unique dates
 				// 2) TIMESTAMP (I need hour). Getting it from the first part of example 00:04:45,212.
 				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]);
-				// 3) THREAD - not needed
-				// 4) OPTIONAL USER CONTEXT - not needed
-				// 5) URI + query string OR RESOURCE
+				// 3) THREAD-ID (in brackets) - not needed, eg (http--0.0.0.0-28080-187)
+				// 4) OPTIONAL USER CONTEXT - not needed (in square brackets), eg [USER:300109921258]
+				// 5) (if 7 parts total) URI + query string OR (if 8 or 9 parts total) requested RESOURCE name (one string), eg getBroadbandSubscriptions
 				String resource = wordsOfLine[4];
 				//if(!uniqueResources.contains(resource)){uniqueResources.add(resource);} // For debugging to print out all unique resources
-				// last ie 7th 8th 9th) DURATION in milliseconds
+				// (NOTE: if 8 elements then 6) probably optional user context again eg CUS12B1435)
+				// (NOTE: if 9 elements then 6) data payload elements for resource (0..n elements) eg 300109921258)
+				// (NOTE: if 9 elements then 7) boolean something eg true)
+				// second from last ie length-2) is STRING "in"
+				// last ie 7th 8th 9th which means wordsOfLine.length-1) DURATION in milliseconds
 				//int duration = Integer.parseInt(wordsOfLine[wordsOfLine.length - 1]);
 				String duration = wordsOfLine[wordsOfLine.length - 1]; // duration
 				if(debug)System.out.println("[1)Date: " + date + "] [2)Hour: " + hour + "] [5)URI+query/Resource: " + resource + "] [last) Duration: " + duration + "]");
 
+				//NOTE: (URL = Uniform Resource Locator;) URI = Uniform Resource Identifier; (URN = Uniform Resource Name)
+				//NOTE: (in my case) ? separates URI (left half) and query (right half)
+				//NOTE: = separates field-name from value-name (somefield=somename)
+				//NOTE: (in my case) & separates field=value-s (or ; series of items + + + space is + or %20)
+				//NOTE: (# can be used to specify a subsection/fragment of a document)
+				//NOTE: (Letters A-Z, a-z, numbers 0-9 and characters * - . _ are left as-is.)
 				URI aURI;
 				try {
 					aURI = new URI(resource);
@@ -217,141 +227,69 @@ public class Assignment {
 					System.err.println("Caught URI syntax exception: " + e.getMessage());
 					if(debug)e.printStackTrace();
 				}
+				// make the data value (request count) of current hour bigger by one (hours in rows, data in single column). Basic solution for Key Value Pairs.
+				hoursAndRequests[hour][0]++; 
 				
-				// ----------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
-
-				// URL = Uniform Resource Locator
-				// = separates name from value
-				// & or ; separate field=value-s, series of items + + +   space is + or %20
-				// # can be used to specify a subsection/fragment of a document
-				// Letters A-Z, a-z, numbers 0-9 and characters * - . _ are left as-is.
-
-				if(debug)System.out.println("[Date: "+ date +"] [Hour: "+ hour +"] [Duration: "+ duration + "]" );
-
-				// row // column // only using 0 for temp KVP
-				//System.out.println("adding hour " + hour + " and duration " + duration);
-				//hoursDurations[hour][0] += duration;
-				hoursAndRequests[hour][0] ++; // can do without [0], just make one dimensional array
-
 				//String[][] hourAndDuration = new String[hour][duration];
-				// DATES LIST NOT NEEDED
-//				if(!uniqueDates.contains(date)){
-//					uniqueDates.add(date);
-//				};
-				
-				// TODO
-				//System.out.println("PUTTING DATE AND INTEGER HOLDERS INTO datesndHoursDataMap");
-				//System.out.println("1GIVE STUFF " + datesAndHoursDataMap.get(date));
-				int[][] temp = datesAndHoursDataMap.get(date);
-				//System.out.println("date is " + date + "temp is " + temp);
-				// DATE EXISTS (should be hour?)
-				if(temp != null){
+				// Putting date and duration holders into datesAndHoursDataMap
+				int[][] temp = datesAndHoursDataMap.get(date); // exact date hours and their data (request amount). In other temp is temporary date data (hour and request amount) holder. //(map.get("test")[0][1]);
+				// If (hour and hour request) data for date exists (ie temporary holder isn't null)
+				if(temp != null){ // Date exists!
 					//System.out.println("DATE EXISTS");
 					int tempHourVal = temp[hour][0];
-					//System.out.println("temp hour val is " + tempHourVal);
+					//System.out.println("OLD temp hour "+hour+" val is " + tempHourVal);
+					// Taking temp array [x hour][0] first element and putting +1 there, increasing the times it has been accessed at certain date, certain hour
 					tempHourVal++;
-					temp[hour][0] = tempHourVal;
-					datesAndHoursDataMap.put(date, temp);
-					tempHourVal = temp[hour][0];
-					//System.out.println("NEW temp hour val is " + tempHourVal);
-					// NO SUCH DATE	
-				}else{
+					temp[hour][0] = tempHourVal; // or ++tempHourVal, needs to be increased before putting it there
+					datesAndHoursDataMap.put(date, temp); // so new temp value is +1
+					//System.out.println("NEW temp hour "+hour+" val is " + temp[hour][0]); // aka tempHourVal
+				}else{ // No such date!
 					//System.out.println("DATE DOES NOT EXIST");
 					//datesAndHoursDataMap.put(date, new int[24][1]); // Hours, hour data
-					temp = new int[24][1];
-					temp[hour][0] = 1;
+					temp = new int[24][1]; // NOTE: int[][] hourValues = new int [24][];
+					temp[hour][0] = 1; 
 					datesAndHoursDataMap.put(date, temp);
-					//System.out.println("please" + datesAndHoursDataMap.get(date)[hour][0]); // WORKS please1
-					//System.out.println("2GIVE STUFF " + datesAndHoursDataMap.get(date));
+					//System.out.println("Currernt date current hour request count: " + datesAndHoursDataMap.get(date)[hour][0]);
 				}
-				//System.out.println("hour is " + hour + "temphourval++ is" + tempHourVal++);
-				//temp[hour][0] = tempHourVal++; // Taking temp array [x hour][0] first element and putting +1 there, increasing the times it has been accessed at certain date, certain hour
-				//datesAndHoursDataMap.put(date, temp); // new temp value +1
-				//temp = datesAndHoursDataMap.get(date);
-				//System.out.println("hour is " + hour);
-				//tempHourVal = temp[hour][0];
-				//System.out.println("temp hour val is NOW " + tempHourVal);
-				//(map.get("test")[0][1]);
-
-				//if(datesAndHours.get(date) == null){ // SPECIFIC DATE DOES NOT EXIST
-				//datesAndHours.put(date,)
-				//datesAndHours.put(date, new String[][]);
-
-				//datesAndHours.put(arg0, arg1)
-
-				// 7 or 9
-				// 1) date eg 2015-08-19 // WHAT IF NOT SAME DATE (histogram)? 24h for each date? or just date + add hours?
-				// 2) timestamp eg 00:06:44,560
-				// 3) thread-id (in brackets) eg (http--0.0.0.0-28080-187)
-				// 4) optional user context (in square brackets) eg [USER:300109921258]
-
-				// !!! IF 7
-				// 5) URI + query string 
-
-				// !!! IF 8
-				// 5) requested resource name (one string) eg getBroadbandSubscriptions
-				// 6) ??? eg CUS12B1435
-
-				// !!! IF 9
-				// 5) requested resource name (one string) eg getSubcriptionCampaigns
-				// 6) data payload elements for resource (0..n elements) eg 300109921258
-				// 7) BOOLEAN SOMETHING!? eg true
-
-				// length-2) string "in"
-				// length-1) request duration in ms
-			} // END WHILE
+			} // END WHILE (scanner has next line) ie FILE READ END
 		}catch(FileNotFoundException e){
 			System.err.println("File not found exception: " + e.getMessage());
 			if(debug)e.printStackTrace();
 			return;
 		}
-
-		// PRINTING OUT ALL UNIQUE RESOURCES (130)
+		
+		// PRINTING OUT ALL UNIQUE RESOURCES IN LOG FILE (130)
 		//		Collections.sort(uniqueResources);
 		//		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
-		//		for(String resource : uniqueResources){
-		//			System.out.println(resource);
-		//		}
+		//		for(String resource : uniqueResources){System.out.println(resource);}
 
-		// PRINTING OUT ALL UNIQUE PATHS (42)
+		// PRINTING OUT ALL UNIQUE PATHS IN LOG FILE (42)
 		//		Collections.sort(uniquePaths);
 		//		System.out.println("------------------------ There are " + uniquePaths.size() + " unique paths.");
-		//		for(String path : uniquePaths){
-		//			System.out.println(path);
-		//		}
+		//		for(String path : uniquePaths){System.out.println(path);}
 
 		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
 		//		Collections.sort(uniquePathsWithResources);
-		//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources. (FIXED?)");
-		//		for(String path : uniquePathsWithResources){
-		//			System.out.println(path);
-		//		}
-
+		//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources.");
+		//		for(String path : uniquePathsWithResources){System.out.println(path);}
 		// SAME THING WITH MAP AND KVP-s!!!!
-		// PRINTING OUT ALL UNIQUE PATHS WITH IMPORTANT QUERIES (atm only "ACTION=blablablabla") (27)
-		//		Collections.sort(uniquePathsWithResources);
 		//		System.out.println("------------------------ There are " + uniquePathsWithResources.size() + " uniquePathsWithResources MAP");
-		// Keys are paths + important query parts
-		// values are lists of durations, now I can calculate average
+		// Keys are paths + important query parts; Values are lists of durations, now I can calculate average
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
 
-		//		List<Integer> uniqueHistogramHours = new ArrayList<Integer>();
+		//		List<Integer> uniqueHistogramHours = new ArrayList<Integer>(); // Not used
 		List<String> uniqueHistogramDays = new ArrayList<String>();
-
-		//		int[][] hourValues = new int [24][];
-
 		Map<Integer, List<Integer>> hourDurations = new TreeMap<Integer,List<Integer>>();
-
-		//System.out.println("[Date][Hour][Amount of requests]");
+		
+		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
+		
 		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){ // KEY AND VALUE
 			String date = entry.getKey();
-
 			// FOR HISTOGRAM:
 			if(!uniqueHistogramDays.contains(date)){
 				uniqueHistogramDays.add(date);
 			}
-
 			//			if(!hourDurations.containsKey(date)){
 			//				hourDurations.put(date);
 			//			}
@@ -685,20 +623,12 @@ public class Assignment {
 	}
 
 	// TO CHECK IF command line ARGUMENT IS NUMBER OR NOT (for n amount of highest)
+	// Checks if NumberFormar formatter is able to parse the whole length of given string or not, better than using double d = Double.parseDouble(str); and catching NumberFormatException
 	public static boolean isNumeric(String str)  
 	{  
 		NumberFormat formatter = NumberFormat.getInstance();
 		ParsePosition pos = new ParsePosition(0);
 		formatter.parse(str, pos);
 		return str.length() == pos.getIndex();
-		//	  try  
-		//	  {  
-		//	    double d = Double.parseDouble(str);  
-		//	  }  
-		//	  catch(NumberFormatException nfe)  
-		//	  {  
-		//	    return false;  
-		//	  }  
-		//	  return true;  
 	}
 }
