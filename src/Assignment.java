@@ -104,10 +104,10 @@ public class Assignment {
 		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
-		// DATE, [HOURS][HOUR DATA ie requests in one hour]
+		// DATE, [HOURS][HOUR DATA ie requests in one hour] TreeMap so it would be sorted.
 		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>();
-
-		List<String> dates = new ArrayList<String>(); // LIST FOR STORING ALL DATES
+		// LIST FOR STORING ALL DATES
+		//List<String> dates = new ArrayList<String>(); 
 		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
 		int[][] hoursAndRequests = new int[24][1];
 
@@ -122,33 +122,19 @@ public class Assignment {
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
 		// Needs to have average duration calculated and added
 
+		// Using Scanner to read each line in log (text) file.
 		try(Scanner scanner = new Scanner(file)){
-			//Scanner scanner = new Scanner(file);
-			//System.out.println("Scanner:" + scanner.toString());
-
-			// Reading Scanner class lines
-			int lineNr = 1;
-
-			// HOURS ARRAY (FOR HISTOGRAM), X hours. First element 0th, last 23rd if only one 24h period
-			// Pair<Integer, String> myPair = new Pair<>(7, "Seven");
-			// Map<String, String>
-			// Map<String, String[]>
-
-			//Map<String, String[][]> datesAndHours = new HashMap<String, String[][]>();
-			
-			//List<String> dates = new ArrayList<String>();
-			//List<String> hours = new ArrayList<String>();
-
-			//String[] dates; //new String[24];
-			//String[] hours;
-			// [][] date + hour data later on
-
+			int lineNrCounter = 1;
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
-				//System.out.println("Line: " + lineNr + " :" + line);
+				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [URI + query string] [string "in"] [request duration in ms]
+				// eg 2015-08-19 00:00:02,814 (http--0.0.0.0-28080-245) [CUST:CUS5T27233] /substypechange.do?msisdn=300501633574 in 17
+				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [requested resource name (one string)] [data payload elements for resource (0..n elements)] [string "in"] [request duration in ms]
+				// eg 2015-08-19 00:04:45,212 (http--0.0.0.0-28080-405) [] updateSubscriptionFromBackend 300445599231 in 203
+				
 				String[] wordsOfLine = line.split(" ");
-				if(debug)System.out.println("("+lineNr+") Length: " + wordsOfLine.length + " Line: " + line);
-				lineNr++;				
+				if(debug)System.out.println("(Line:"+lineNrCounter+") Length: " + wordsOfLine.length + " Line: " + line);
+				lineNrCounter++;			
 
 				// 1) DATE
 				String date = wordsOfLine[0];
@@ -298,10 +284,11 @@ public class Assignment {
 				hoursAndRequests[hour][0] ++; // can do without [0], just make one dimensional array
 
 				//String[][] hourAndDuration = new String[hour][duration];
-				// TODO FIX
-				if(!dates.contains(date)){
-					dates.add(date);
-				};	
+				// DATES LIST NOT NEEDED
+//				if(!dates.contains(date)){
+//					dates.add(date);
+//				};
+				
 				// TODO
 				//System.out.println("PUTTING DATE AND INTEGER HOLDERS INTO datesndHoursDataMap");
 				//System.out.println("1GIVE STUFF " + datesAndHoursDataMap.get(date));
@@ -661,11 +648,12 @@ public class Assignment {
 		printMap(sortedMap, nNumberFromParams);
 
 		// for (int i=0; i < array.length; i++) {
-		if(debug){
-			for(String d : dates){
-				System.out.println("Date is: " + d);
-			}
-		}
+		// DATES LIST NOT NEEDED
+//		if(debug){
+//			for(String d : dates){
+//				System.out.println("Date is: " + d);
+//			}
+//		}
 
 		String hourAndRequestsAmount = "";
 		for (int i = 0; i < hoursAndRequests.length; i++) {
