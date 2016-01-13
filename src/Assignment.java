@@ -19,39 +19,6 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-// NOTES START: --------------------------------------------------
-//aks-mbp:dist ak$ java -jar assignment.jar timing.log 10
-// aks-mbp:dist ak$
-// (java -jar)
-// (name of .jar)
-// location of file
-// n = 10 (last argument)
-
-//System.out.println("First argument is " + args[0]); // if no arg: java.lang.ArrayIndexOutOfBoundsException
-//args[0].equals("h")
-
-// NOTES FOR HELP PRINTS:
-// ant [options] [target [target2 [target3] ...]]
-// Usage: / Options:
-// where options include:
-// -help, -h
-// -projecthelp, -p
-// -logfile <file>       use given file for log
-// -logger <classname>
-// if line is too big, explanation to 2nd line but still same distance
-
-//System.out.println("-help, -h              print this message and exit");
-// TEXT, empty space, 16th or 24th letter is text
-
-//System.out.println(getLocalCurrentDate());
-//private static Date getLocalCurrentDate() {
-//return new Date();
-//}
-
-//File file = new File("timing.log"); //("file.txt"); FOR DEBUGGING, put into eclipse
-
-// NOTES END: --------------------------------------------------
-
 public class Assignment {
 	public static void main(String[] args) {
 		// Setting starting time for calculating program run duration in milliseconds.
@@ -62,7 +29,7 @@ public class Assignment {
 		// Debug parameter, set true to see debug log in console.
 		boolean debug = false;
 
-		// START ------------- CHECK COMMAND LINE ARGUMENTS ---------------
+		// START ------------- CHECKING COMMAND LINE ARGUMENTS ---------------
 
 		// Setting numeric command line argument as n and TODO text argument as file name (or location)
 		if(args.length > 0){
@@ -75,8 +42,7 @@ public class Assignment {
 				if(userNeedsHelp){
 					// Printing help menu:
 					if(debug)System.out.println("User needs help!!!!!");
-					System.out.println();
-					System.out.println("Usage: java -jar jarfile <logfile> [number *optional*]");
+					System.out.println("\nUsage: java -jar jarfile <logfile> [number *optional*]");
 					System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar into dist folder)");
 					System.out.println("Options:");
 					System.out.println("-help, -h, -?,        print this help message and exit");
@@ -138,11 +104,8 @@ public class Assignment {
 		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
-		// DATE,   Hours and data per each hour
-		// Date, Hour, hour data TODO
-		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>(); //String,int[24][1]
-		//int[24][1] a = new int[][];
-		//datesAndHoursDataMap.put("test", a);
+		// DATE, [HOURS][HOUR DATA ie requests in one hour]
+		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>();
 
 		List<String> dates = new ArrayList<String>(); // LIST FOR STORING ALL DATES
 		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
@@ -172,9 +135,7 @@ public class Assignment {
 			// Map<String, String[]>
 
 			//Map<String, String[][]> datesAndHours = new HashMap<String, String[][]>();
-			//Map<String, String[][]> datesAndHours = new HashMap<String, String[][]>();
-
-
+			
 			//List<String> dates = new ArrayList<String>();
 			//List<String> hours = new ArrayList<String>();
 
@@ -307,10 +268,7 @@ public class Assignment {
 							// TODO IF EXISTS, need to add to values list (Durations)
 							uniquePathsWithResourcesMap.get(path + " " + extraQueryParts).add(duration);
 						}
-
-
 					}// END FINDING URI PATH
-
 
 					//if(!uniquePathsWithResources.contains(path + " " + )){
 					//	
@@ -392,7 +350,6 @@ public class Assignment {
 
 				// !!! IF 7
 				// 5) URI + query string 
-
 
 				// !!! IF 8
 				// 5) requested resource name (one string) eg getBroadbandSubscriptions
@@ -565,7 +522,7 @@ public class Assignment {
 		double avgRequests = 0;
 		double totalRequests = 0; // in one hour
 		//double maxRequestsInHour = 0;
-		int totalAverageAmountOfRequests = 0;
+		int totalAverageAmountOfRequests = 0; // TODO do not use this anymore, just use total amount divided by days or smth
 
 		for(int i=0; i<averageRequestsPerHour.length; i++){
 			double tmp = averageRequestsPerHour[i][0];
@@ -575,7 +532,7 @@ public class Assignment {
 			//}
 		}
 
-		//		System.out.println("Total amount of requests: " + totalAverageAmountOfRequests); // adds averages together, NOT THE OVERALL TOTAL!!!!
+		//		System.out.println("Total amount of requests: " + totalAverageAmountOfRequests); // adds averages together, NOT THE OVERALL TOTAL!!!! USELESS DATA
 		System.out.println("Total amount of requests: " + totalRequestsOverall);
 
 		DecimalFormat df = new DecimalFormat("000.00");
@@ -585,7 +542,6 @@ public class Assignment {
 		String histogramBoxes = "";
 		double percentage = 0;
 		//double roundedPercentage = 0;
-
 		int howManyBoxesFilled = 0;
 
 		for(int i=0; i<24; i++){
@@ -613,9 +569,7 @@ public class Assignment {
 					}else{
 						histogramBoxes += "[ ]";
 					}
-
 				}
-
 			}
 			if(i < 10){
 				System.out.println("Hour: 0"+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Total: "+ dfNoDecimals.format(totalRequests) + " Avg: " + df.format(avgRequests) + " req./hour");
@@ -728,15 +682,9 @@ public class Assignment {
 				if(debug)System.out.println(hourAndRequestsAmount);
 			}
 		}
-
-		// TODO LOOP THROUGH EACH DAY, HOURS AND REQUESTS,
-		// HIGHEST NUMBER OF REQUESTS PER HOUR (any day!!) IS 100%,
-		// make graphs with xxxxx, scales, legend
-
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
-		System.out.println();
-		System.out.println("Program ran for " + totalTime + " milliseconds.");
+		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
 	} // END MAIN
 
 	private static Map<String, Double> sortByComparator(Map<String, Double> unsortMap) {
