@@ -74,6 +74,7 @@ public class proov {
 					// Printing help menu:
 					if(debug)System.out.println("User needs help!!!!!");
 					System.out.println("Usage: java -jar jarfile <logfile> [number *optional*]");
+					System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar)");
 					System.out.println("Options:");
 					System.out.println("-help, -h, -?,        print this help message and exit");
 					System.out.println("jarfile,              location of this .jar file");
@@ -452,9 +453,15 @@ public class proov {
 					}
 				}
 			}
+		} // END FOR
 
-		}
-
+		// FOR HISTOGRAM
+		// 1) Loop over all dates, hours and their data
+		// 2) Create new holder for int[24][] (24 hours, unlimited numbers for each hour)
+		// 3) Calculate averages for columns [24][x]
+		// 4) Print histogram with average numbers for hours over days
+		// 5) Draw histogram with 00 [x][x][x][x][x][x][x][o][o][o] (78%) or something like that
+		
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
 
 		double totalCount = 0.0;
