@@ -201,24 +201,20 @@ public class Assignment {
 						}
 						// if unique URI paths (first half before ?) with resources (eg /mainContent.do with extras action=TERMINALFINANCE contentId=main_subscription)
 						// doesn't already contain current path+extras then add path and its extra query parts to String array uniquePathsWithResources
-						//if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
-						//	if(debug)System.out.println("Addig path: " + path + " with extraQueryParts: " + extraQueryParts);
-						//	uniquePathsWithResources.add(path + " " + extraQueryParts);
-						//}
-						// SAME THING WITH MAP AND DURATION (Key Value Pairs)
+						//if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){uniquePathsWithResources.add(path + " " + extraQueryParts);}
+						// SAME THING WITH MAP AND DURATIONS (Key Value Pairs): (No duration here, only path and extra query parts)
 						if(!uniquePathsWithResourcesMap.containsKey(path + " " + extraQueryParts)){
-							if(debug)System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
-							//List<String> values = Arrays.asList(duration); //new ArrayList<String>();
-							// Arrays.asList(duration); // or ("bla","bla","bla");
-							//uniquePathsWithResourcesMap.put(path + " " + extraQueryParts, values);
-							uniquePathsWithResourcesMap.put(path + " " + extraQueryParts,new ArrayList<String>(Arrays.asList(duration)));
-							//uniquePathsWithResourcesMap.get(path + " " + extraQueryParts).add(duration);
-							// TODO UNIQUE PATHS NEEDS TO HOLD ALL DURATIONS TO CALCULATE AVERAGE LATER
+							if(debug)System.out.println("Addig path: " + path + " with extraQueryParts: " + extraQueryParts);
+							List<String> durations = new ArrayList<String>(Arrays.asList(duration)); // asList creates ("bla","bla","bla"), in this case only contains a single duration
+							// PATH with QUERY PARTS, List<String> of durations into uniquePathsWithResourcesMap
+							uniquePathsWithResourcesMap.put(path + " " + extraQueryParts,durations);
 						}else{
-							// TODO IF EXISTS, need to add to values list (Durations)
+							// IF path with extra queries EXISTS, get via KEY and add duration to existing durations list as VALUE
 							uniquePathsWithResourcesMap.get(path + " " + extraQueryParts).add(duration);
 						}
-					}// END FINDING URI PATH
+					}// END FINDING URI PATH (aURI.getPath() != null)
+					
+					// ----------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 
 					//if(!uniquePathsWithResources.contains(path + " " + )){
 					//	
