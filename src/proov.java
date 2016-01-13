@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -69,20 +70,23 @@ public class proov {
 			// If user has correct amount of arguments ie one (log file name or location with name) or two (log file and how many average request durations).
 			if(args.length <3){
 				// Checking for command line arguments -h, -? and -help, if any of them exists in command line arguments, show help menu and stop program.
-				boolean userNeedsHelp = Arrays.asList(args).contains("-help") || Arrays.asList(args).contains("-h") || Arrays.asList(args).contains("-?");
+				List<String> argsList = Arrays.asList(args);
+				boolean userNeedsHelp = argsList.contains("-help") || argsList.contains("-h") || argsList.contains("-?");
 				if(userNeedsHelp){
 					// Printing help menu:
 					if(debug)System.out.println("User needs help!!!!!");
+					System.out.println();
 					System.out.println("Usage: java -jar jarfile <logfile> [number *optional*]");
-					System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar)");
+					System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar into dist folder)");
 					System.out.println("Options:");
 					System.out.println("-help, -h, -?,        print this help message and exit");
 					System.out.println("jarfile,              location of this .jar file");
-					System.out.println("<logfile>,            only file name with extension (if log file is in command prompt working directory) or exact location of log file");
+					System.out.println("<logfile>,            file name with extension (if log file is in command prompt working directory) or exact location of log file");
 					System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
 					// End calculating program run duration.
 					long endTime   = System.currentTimeMillis();
 					long totalTime = endTime - startTime;
+					System.out.println();
 					System.out.println("Program ran for " + totalTime + " milliseconds.");
 					return;
 				}else{
@@ -121,7 +125,7 @@ public class proov {
 		if(!logFileNameFromParams.contains(".")){
 			logFileNameFromParams += ".log";
 		}
-			
+
 		if(logFileNameFromParams.contains("\\") || logFileNameFromParams.contains("/")){
 			fileDir = logFileNameFromParams;
 			file = new File(fileDir); 
@@ -435,9 +439,26 @@ public class proov {
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
 
+		List<Integer> uniqueHistogramHours = new ArrayList<Integer>();
+		List<String> uniqueHistogramDays = new ArrayList<String>();
+
+		//		int[][] hourValues = new int [24][];
+
+		Map<Integer, List<Integer>> hourDurations = new TreeMap<Integer,List<Integer>>();
+
 		//System.out.println("[Date][Hour][Amount of requests]");
 		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){ // KEY AND VALUE
 			String date = entry.getKey();
+
+			// FOR HISTOGRAM:
+			if(!uniqueHistogramDays.contains(date)){
+				uniqueHistogramDays.add(date);
+			}
+
+			//			if(!hourDurations.containsKey(date)){
+			//				hourDurations.put(date);
+			//			}
+
 			System.out.println("-----Date:"+date+"-----");
 			int[][] hoursAndData = entry.getValue();
 			// ROWS
@@ -448,6 +469,42 @@ public class proov {
 					//System.out.printf("Row: %d Element: %d Value: %d\n", row, element, container[row][element]);
 					int requestsAmount = hoursAndData[row][element];
 					if(requestsAmount > 0){
+
+						// FOR HISTOGRAM:
+						if(!uniqueHistogramHours.contains(row)){
+							uniqueHistogramHours.add(row);
+						}
+						// KEY: HOUR, VALUE: DATA (FOR HISTOGRAM)
+						System.out.println("putting " + row + " and " + requestsAmount);
+						List<Integer> currentRowInts = hourDurations.get(row);
+						if(currentRowInts == null)
+							currentRowInts = new ArrayList<Integer>();
+						currentRowInts.add(requestsAmount);
+						hourDurations.put(row, currentRowInts); //requestsAmount);
+
+						// eg hourValues[hour 10][1000]th slot for data
+						//						if(hourValues[row] == null){
+						//							//hourValues[row][0] = new int [row][0];
+						//							System.out.println("Hourvalues row is null ("+row+")");
+						//							System.out.println("hourvalues length is " + hourValues.length);
+						//							//hourValues[row] = new int[row];
+						//							//int currentHourVals = hourValues[row];
+						//							//hourValues[row][0] ++;
+						//							hourValues[row][0] = new int[row]; // new int [row][0]
+						//							System.out.println("hourvalues length is " + hourValues.length);
+						//						}
+
+						//						int slotToPutData = 0;
+						//						if(hourValues[row] != null){
+						//							slotToPutData = hourValues[row].length;
+						//						}else{
+						//							hourValues[row][0] = new int[];
+						//						}
+						//						System.out.println("TRYING TO PUT DATA INTO hourValues["+row+"]["+slotToPutData+"]");
+						////						hourValues[row][slotToPutData] = requestsAmount;
+						//						//hourValues[row][0] ++;
+						//						slotToPutData++;
+
 						if(row < 10){
 							//System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
 							System.out.println("[Hour: 0"+ row + "] [Requests: " + requestsAmount +"]");
@@ -459,31 +516,46 @@ public class proov {
 				}
 			}
 		} // END FOR
+		System.out.println("\nHistogram: (Average over " + uniqueHistogramDays.size() + " days)");
+		for(int hour : uniqueHistogramHours){
+			if(hour <10){
+				System.out.println("[Hour: 0" + hour + "]");
+			}else{
+				System.out.println("[Hour: " + hour + "]");
+			}
+		}
+
+		for (Entry<Integer, List<Integer>> entry : hourDurations.entrySet()){ // KEY AND VALUE
+			System.out.println("Key: "+ entry.getKey() + " Value: " + entry.getValue());
+			
+		}
 
 		// FOR HISTOGRAM
 		// 1) Loop over all dates, hours and their data
 		// int/String hours and datas ArrayList<Integer> list = new ArrayList<Integer>();
-		int[][] hoursAverageData = new int [24][];
-		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){
-			//String date = entry.getKey();
-			int[][] hoursAndData = entry.getValue();
-			// hour
-			for(int row = 0; row < hoursAndData.length; row++){
-				// hour data
-				for(int element = 0; element < hoursAndData[row].length; element++){
-					//hoursAverageData[row][].
-					// NEW                     // OLD
-					//inthoursAverageData[row][element]
-					//hoursAverageData[row][length+1] = hoursAndData[row][element]; // TODO can't be same, must add
-				}
-			}
+		// I ALREADY HAVE THAT LIST DOH
+		//		int[][] hoursAverageData = new int [24][];
+		//		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){
+		//			//String date = entry.getKey();
+		//			int[][] hoursAndData = entry.getValue();
+		//			// hour
+		//			for(int row = 0; row < hoursAndData.length; row++){
+		//				// hour data
+		//				for(int element = 0; element < hoursAndData[row].length; element++){
+		//					
+		//					//hoursAverageData[row][].
+		//					// NEW                     // OLD
+		//					//inthoursAverageData[row][element]
+		//					//hoursAverageData[row][length+1] = hoursAndData[row][element]; // TODO can't be same, must add
+		//				}
+		//			}
+		//		}
 
-		}
 		// 2) Create new holder for int[24][] (24 hours, unlimited numbers for each hour)
 		// 3) Calculate averages for columns [24][x]
 		// 4) Print histogram with average numbers for hours over days
 		// 5) Draw histogram with 00 [x][x][x][x][x][x][x][o][o][o] (78%) or something like that
-		
+
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
 
 		double totalCount = 0.0;
@@ -568,6 +640,7 @@ public class proov {
 
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
+		System.out.println();
 		System.out.println("Program ran for " + totalTime + " milliseconds.");
 	} // END MAIN
 
