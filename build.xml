@@ -4,7 +4,7 @@
 		Create a Java Project (JAR) with Ant build script
 	</description>
 	
-	<property name="projectName" value="Tulemus" />
+	<property name="projectName" value="Result" />
 	
 	<!-- SRC BUILD CLASSES -->
 	<!-- Java sources -->
@@ -33,10 +33,11 @@
 		<mkdir dir="${dist.dir}" />
 
 		<!-- Put everything in ${build} into the {$projectName}-${DSTAMP}.jar file -->
-		<jar jarfile="${dist.dir}/${projectName}-${DSTAMP}.jar" basedir="${build.dir}" >
+		<!-- <jar jarfile="${dist.dir}/${projectName}-${DSTAMP}.jar" basedir="${build.dir}" > -->
+		<jar jarfile="${dist.dir}/assignment.jar" basedir="${build.dir}" >
 		    <manifest>
 			<!-- create an executable Jar, MAIN CLASS java -cp dist/DateUtils-20141030.jar com.karl.core.utils.DateUtils -->
-			<attribute name="Main-Class" value="proov" />
+			<attribute name="Main-Class" value="Assignment" />
 		    </manifest>
 		</jar>
 	</target>

@@ -52,7 +52,7 @@ import java.util.TreeMap;
 
 // NOTES END: --------------------------------------------------
 
-public class proov {
+public class Assignment {
 	public static void main(String[] args) {
 		// Setting starting time for calculating program run duration in milliseconds.
 		long startTime = System.currentTimeMillis();
@@ -118,7 +118,7 @@ public class proov {
 		// START ------------- CHECK LOG FILE LOCATION --------------------
 
 		// Check if user is entering exact log file location:
-		// eg "java -jar dist/Tulemus-20160112.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
+		// eg "java -jar dist/Result-20160112.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
 		String fileDir = "";
 		File file;
 		// No "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
