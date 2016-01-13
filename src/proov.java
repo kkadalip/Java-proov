@@ -252,7 +252,11 @@ public class proov {
 									//pairSecondHalf = splittedPair[1]; // Maybe needed later
 									//									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
 								}
-								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId") || pairFirstHalf.equals("category")){
+								if(pairFirstHalf.equals("action") ||
+										pairFirstHalf.equals("contentId") ||
+										pairFirstHalf.equals("category")||
+										pairFirstHalf.equals("properties") ||
+										pairFirstHalf.equals("target")){
 									extraQueryParts += (pair + " ");
 								}
 								//								// PATH + ACTION=blablablabla
@@ -439,7 +443,7 @@ public class proov {
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
 
-//		List<Integer> uniqueHistogramHours = new ArrayList<Integer>();
+		//		List<Integer> uniqueHistogramHours = new ArrayList<Integer>();
 		List<String> uniqueHistogramDays = new ArrayList<String>();
 
 		//		int[][] hourValues = new int [24][];
@@ -471,10 +475,10 @@ public class proov {
 					if(requestsAmount > 0){
 
 						// FOR HISTOGRAM:
-//						if(!uniqueHistogramHours.contains(row)){
-//							uniqueHistogramHours.add(row);
-//						}
-						
+						//						if(!uniqueHistogramHours.contains(row)){
+						//							uniqueHistogramHours.add(row);
+						//						}
+
 						// KEY: HOUR, VALUE: DATA (FOR HISTOGRAM)
 						//System.out.println("putting " + row + " and " + requestsAmount);
 						List<Integer> currentRowInts = hourDurations.get(row);
@@ -519,18 +523,21 @@ public class proov {
 		} // END FOR
 		double uniqueHistogramDaysAmount = uniqueHistogramDays.size();
 		System.out.println("\nHistogram of hourly number of requests. Average calculated over " + (int)uniqueHistogramDaysAmount + " day(s)");
-		//System.out.println("\nHistogram of hourly request DURATIONS: Average over " + (int)uniqueHistogramDaysAmount + " day(s)");
-//		for(int hour : uniqueHistogramHours){
-//			if(hour <10){
-//				System.out.println("[Hour: 0" + hour + "]");
-//			}else{
-//				System.out.println("[Hour: " + hour + "]");
-//			}
-//		}
 
-		double totalRequestsThisHour;
+		//System.out.println("\nHistogram of hourly request DURATIONS: Average over " + (int)uniqueHistogramDaysAmount + " day(s)");
+		//		for(int hour : uniqueHistogramHours){
+		//			if(hour <10){
+		//				System.out.println("[Hour: 0" + hour + "]");
+		//			}else{
+		//				System.out.println("[Hour: " + hour + "]");
+		//			}
+		//		}
+
+		double totalRequestsThisHour = 0;
+		int totalRequestsOverall = 0;
 		//double hoursAndAverageDurations[][] = new double[24][1];
-		double averageRequestsPerHour[][] = new double[24][1];
+		double averageRequestsPerHour[][] = new double[24][1]; // FOR AVERAGES IN HISTOGRAM - each line
+		double totalRequestsPerHour[][] = new double[24][1]; // FOR TOTALS IN HISTOGRAM - each line
 		for (Entry<Integer, List<Integer>> entry : hourDurations.entrySet()){ // KEY AND VALUE
 			int hour = entry.getKey();
 			List<Integer> requestsInHours = entry.getValue();
@@ -538,47 +545,58 @@ public class proov {
 			totalRequestsThisHour = 0;
 			for(int request : requestsInHours){
 				totalRequestsThisHour += request;
+				totalRequestsOverall += request;
 			}
 			// REQUESTS AMOUNT
 			double averageTotalRequestsThisHour = totalRequestsThisHour / uniqueHistogramDaysAmount;
 			averageRequestsPerHour[hour][0]=averageTotalRequestsThisHour;
+
+			totalRequestsPerHour[hour][0] = totalRequestsThisHour;
 			// FOR ONLY UNIQUE HOURS DATA
-//			if(hour < 10){
-//				System.out.println("Hour: 0" + hour + " Avg. requests: " + averageTotalRequestsThisHour);
-//			}else{
-//				System.out.println("Hour: " + hour + " Avg. requests: " + averageTotalRequestsThisHour);
-//			}
-			
+			//			if(hour < 10){
+			//				System.out.println("Hour: 0" + hour + " Avg. requests: " + averageTotalRequestsThisHour);
+			//			}else{
+			//				System.out.println("Hour: " + hour + " Avg. requests: " + averageTotalRequestsThisHour);
+			//			}
+
 		}
+
 		// MAX WRONG BECAUSE THIS IS NOT DIVIDED BY INSTANCE AMOUNT?
 		double avgRequests = 0;
+		double totalRequests = 0; // in one hour
 		//double maxRequestsInHour = 0;
-		int totalAmountOfRequests = 0;
+		int totalAverageAmountOfRequests = 0;
 
 		for(int i=0; i<averageRequestsPerHour.length; i++){
 			double tmp = averageRequestsPerHour[i][0];
-			totalAmountOfRequests += tmp;
+			totalAverageAmountOfRequests += tmp;
 			//if(tmp > maxRequestsInHour){
 			//	maxRequestsInHour = tmp;
 			//}
 		}
+
+		//		System.out.println("Total amount of requests: " + totalAverageAmountOfRequests); // adds averages together, NOT THE OVERALL TOTAL!!!!
+		System.out.println("Total amount of requests: " + totalRequestsOverall);
+
 		DecimalFormat df = new DecimalFormat("000.00");
+		DecimalFormat dfNoDecimals = new DecimalFormat("0000");
 		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour));
 		// Max avg dur is 100%
 		String histogramBoxes = "";
 		double percentage = 0;
 		//double roundedPercentage = 0;
-		
+
 		int howManyBoxesFilled = 0;
-		
+
 		for(int i=0; i<24; i++){
 			//System.out.println("hoursAndAverageDurations rows are " + hoursAndAverageDurations[i][0]);
 			avgRequests = averageRequestsPerHour[i][0];
+			totalRequests = totalRequestsPerHour[i][0];
 			//System.out.println("avg dur " + avgDuration + " / " + " max dur " + maxAvgDuration + " * 100");
 			//percentage = avgRequests / maxRequestsInHour * 100;
-			percentage = avgRequests / totalAmountOfRequests * 100;
+			percentage = avgRequests / totalAverageAmountOfRequests * 100; // ALTERNATIVELY CURRENT REQUESTS / ALL REQUESTS * 100 (not averages)
 			// TAKE ALL TOTAL AMOUNT INTO ACCOUNT
-			
+
 			//System.out.println("percentage is " + percentage);
 			// 78 / 10
 			// is 7.8
@@ -595,16 +613,16 @@ public class proov {
 					}else{
 						histogramBoxes += "[ ]";
 					}
-					
+
 				}
-				
+
 			}
 			if(i < 10){
-				System.out.println("Hour: 0"+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Avg: " + df.format(avgRequests) + " requests per hour");
+				System.out.println("Hour: 0"+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Total: "+ dfNoDecimals.format(totalRequests) + " Avg: " + df.format(avgRequests) + " req./hour");
 			}else{
-				System.out.println("Hour: "+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Avg: " + df.format(avgRequests) + " requests per hour");
+				System.out.println("Hour: "+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Total: "+ dfNoDecimals.format(totalRequests) +" Avg: " + df.format(avgRequests) + " req./hour");
 			}
-			
+
 		}
 
 		// FOR HISTOGRAM
