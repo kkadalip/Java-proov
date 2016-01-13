@@ -157,81 +157,47 @@ public class Assignment {
 				URI aURI;
 				try {
 					aURI = new URI(resource);
-					//if(aURL.getProtocol() != null)
-					//System.out.println("protocol = " + aURL.getProtocol());
-					//if(aURI.getAuthority() != null)
-					//System.out.println("!!!! authority = " + aURI.getAuthority());
-					//if(aURI.getHost() != null)
-					//System.out.println("!!!! host = " + aURI.getHost());
-					//if(aURI.getPort() > 0)
-					//System.out.println("!!!! port = " + aURI.getPort());
-
-					// Queries (field=name) part of URI
-
-					// First part of URI
-					// /main.do&contentId=undefined is wrong because of "&" and won't be split
+					// 1) First part of URI is Path 2) Queries (field=name) part of URI second half ie query
+					// NOTE: /main.do&contentId=undefined is found and wrong because of "&" and won't be split, should have used "?" as by spec (this is a typo by user)
 					if(aURI.getPath() != null){
 						String path = aURI.getPath();
-						//						System.out.println("!!!! path = " + path);
-						/*
-						if(!uniquePaths.contains(path)){
-							uniquePaths.add(path);
-						}
-						*/
-						String extraQueryParts = ""; // IMPORTANT!!!
+						if(debug)System.out.println("URI path: " + path); // eg /substypechange.do
+						//if(!uniquePaths.contains(path)){uniquePaths.add(path);}
+						String extraQueryParts = ""; // Holds all extra parts of URI temporarily IMPORTANT!!!
+						// IF URI HAS QUERY (the part after whateverpath?)  eg load=true&id=6810D9E1D84736F6FF8F039C747C3DD3&contentId=main_subscription
 						if(aURI.getQuery() != null){
-							String query = aURI.getQuery();
-							//							System.out.println("!!!! query = " + query);
-							String[] queryPairs = query.split("&");
-
-							String pairFirstHalf = "";
-							//String pairSecondHalf = ""; // Maybe needed later
+							String query = aURI.getQuery(); // (URI part after ?)
+							if(debug)System.out.println("URI query: " + query);
+							String[] queryPairs = query.split("&"); // Array of queryPairs eg examplefield=examplename
+							//if(debug)System.out.println("queryPairs are " + queryPairs); // (DEBUG)
+							String pairFirstHalf = ""; // First half of field=name pair ie examplefield.
+							//String pairSecondHalf = ""; // Second half of field=name pair ie examplename. Maybe needed later.
 							String[] splittedPair = null;
+							// Looping through query pairs ie array of somefield=somename-s
 							for (String pair : queryPairs){
-								//int index = pair.indexOf("=");
-								//								System.out.println("pair is " + pair);
-								// SPLITTING PAIR TO FIRST AND SECOND HALF
+								//if(debug)System.out.println("pair is " + pair); // (DEBUG)
+								//Splitting pair to first and second half and assigning them to splittedPair String array
 								splittedPair = pair.split("=");
+								// Checking if the pair is field=name or something different, if it is field=name then it has 2 parts
 								if(splittedPair.length == 2){
 									pairFirstHalf = splittedPair[0];
-									//pairSecondHalf = splittedPair[1]; // Maybe needed later
-									//									System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);
+									//pairSecondHalf = splittedPair[1]; // Maybe needed later, keeping it just in case.
+									//if(debug)System.out.println("Pair is " + pair + " First half: " + pairFirstHalf + " Second half: " + pairSecondHalf);//(DEBUG)
+								}else{
+									if(debug)System.out.println("NB! field=name pair is not two parts!!!");
 								}
+								// Cheking if pair first half (somefield=somename somefieldname equals one of the conditions)
 								if(pairFirstHalf.equals("action") ||
 										pairFirstHalf.equals("contentId") ||
 										pairFirstHalf.equals("category")||
 										pairFirstHalf.equals("properties") ||
 										pairFirstHalf.equals("target")){
 									extraQueryParts += (pair + " ");
+									// NOTE: Since I'm looping over all queryPairs, extraQueryParts can have multiple parts eg: action=SUBSCRIPTION contentId=main_subscription 
 								}
-								//								// PATH + ACTION=blablablabla
-								//								// TODO THIS IS BROKEN IF IT HAS BOTH ACTION AND CONTENTID! Main path needs to be separate from queries for modify-ing
-								//								if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
-								//									if(!uniquePathsWithResources.contains(path + " " + pair)){
-								//										uniquePathsWithResources.add(path + " " + pair);
-								//									}
-								//								}
-								//								else{ // PATH
-								//									if(!uniquePathsWithResources.contains(path)){
-								//										uniquePathsWithResources.add(path);
-								//									}
-								//								}
-
-							} // FOR LOOP END
-
-							//							// PATH + ACTION=blablablabla CONTENTID=blbablabal WHATEVER=blablabal
-							//							if(pairFirstHalf.equals("action") || pairFirstHalf.equals("contentId")){
-							//								if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
-							//									uniquePathsWithResources.add(path + " " + extraQueryParts);
-							//								}
-							//							}
-
+							} // FOR pair:queryPairs LOOP END
 						}else{
-							//							// NO QUERY
-							//							if(!uniquePathsWithResources.contains(path)){
-							//								System.out.println("ADDING PATH: " + path);
-							//								uniquePathsWithResources.add(path);
-							//							}
+							// URI HAS NO QUERY
 						}
 
 						if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
