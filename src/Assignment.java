@@ -31,7 +31,7 @@ public class Assignment {
 
 		// START ------------- CHECKING COMMAND LINE ARGUMENTS ---------------
 
-		// Setting numeric command line argument as n and TODO text argument as file name (or location)
+		// Setting numeric command line argument as n, text argument as file location/name
 		if(args.length > 0){
 			if(debug)System.out.println("We have "+ args.length +" command line arguments!");
 			// If user has correct amount of arguments ie one (log file name or location with name) or two (log file and how many average request durations).
@@ -84,7 +84,7 @@ public class Assignment {
 		// START ------------- CHECK LOG FILE LOCATION --------------------
 
 		// Check if user is entering exact log file location:
-		// eg "java -jar dist/Result-20160112.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
+		// eg "java -jar dist/Assignment.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
 		String fileDir = "";
 		File file;
 		// No "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
@@ -92,6 +92,7 @@ public class Assignment {
 			logFileNameFromParams += ".log";
 		}
 
+		// Log file parameter contains slashes, this means that user is trying to give exact location
 		if(logFileNameFromParams.contains("\\") || logFileNameFromParams.contains("/")){
 			fileDir = logFileNameFromParams;
 			file = new File(fileDir); 
@@ -104,53 +105,58 @@ public class Assignment {
 		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
-		// DATE, [HOURS][HOUR DATA ie requests in one hour] TreeMap so it would be sorted.
-		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>();
-		// LIST FOR STORING ALL DATES
-		//List<String> dates = new ArrayList<String>(); 
-		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
-		int[][] hoursAndRequests = new int[24][1];
-
-		List<String> uniqueResources = new ArrayList<>();
-		// MAKE DUPLICATE LISTS FOR CONTAINS CASE SENSITIVITY IF NEEDED
-		List<String> uniquePaths = new ArrayList<>();
-
-		List<String> uniquePathsWithResources = new ArrayList<>();
-
-		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
-
+		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg 
+		// NOTE: Make duplicate lists for checking case sensitive items if necessary.
+		
+		//List<String> uniqueDates = new ArrayList<String>();  // (DEBUG) All unique dates of request lines.
+		//List<String> uniquePaths = new ArrayList<>(); // (DEBUG) All unique paths ie first part of URI. Example: /mobileAppCookie.do or getSubscriptionAuthTokens
+		//List<String> uniqueResources = new ArrayList<>(); // (DEBUG) All unique resources ie second part of URI. Example: /customerPromotions.do?load=true&id=6810D9E1D84736F6FF8F039C747C3DD3&contentId=main_subscription
+		
+		// <DATE> <[HOUR][DATA ie requests in one hour]> TreeMap so it would be sorted.
+		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>(); 
+		// [Hours per day] [Request amount per hour] (NB! First element 0, last 23 for rows)
+		int[][] hoursAndRequests = new int[24][1]; 
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
-		// Needs to have average duration calculated and added
+		List<String> uniquePathsWithResources = new ArrayList<>(); 
+		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
 
 		// Using Scanner to read each line in log (text) file.
 		try(Scanner scanner = new Scanner(file)){
 			int lineNrCounter = 1;
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
+				
+				// Each line consists of either:
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [URI + query string] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:00:02,814 (http--0.0.0.0-28080-245) [CUST:CUS5T27233] /substypechange.do?msisdn=300501633574 in 17
+				// OR
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [requested resource name (one string)] [data payload elements for resource (0..n elements)] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:04:45,212 (http--0.0.0.0-28080-405) [] updateSubscriptionFromBackend 300445599231 in 203
 				
+				// Splitting each line to smaller components using empty spaces between words.
 				String[] wordsOfLine = line.split(" ");
+				// If debug is enabled, printing out line number counter, how many components the line consists of (usually 7 to 9), printing out original line.
 				if(debug)System.out.println("(Line:"+lineNrCounter+") Length: " + wordsOfLine.length + " Line: " + line);
-				lineNrCounter++;			
+				lineNrCounter++;
 
 				// 1) DATE
-				String date = wordsOfLine[0];
-				//dates.add(date);
-				//System.out.println("date is " + date);
-				// 2) TIMESTAMP (I need hour)
-				//String hour = wordsOfLine[1].split(":")[0];
-				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]);
-				//System.out.println("hour is " + hour);
-				// 3) THREAD
-				// 4) OPTIONAL USER CONTEXT
-				// 5) RESOURCE
+				String date = wordsOfLine[0]; 
+				//uniqueDates.add(date); // For debugging to see all unique dates
+				// 2) TIMESTAMP (I need hour). Getting it from the first part of example 00:04:45,212.
+				int hour = Integer.parseInt(wordsOfLine[1].split(":")[0]); 
+				// 3) THREAD - not needed
+				// 4) OPTIONAL USER CONTEXT - not needed
+				// 5) URI + query string OR RESOURCE
 				String resource = wordsOfLine[4];
+				
+				if(debug)System.out.println("1) Date is " + date + " 2) Hour is " + hour + "5) URI+query/Resource " + resource);
+				
+				/*
 				if(!uniqueResources.contains(resource)){
 					uniqueResources.add(resource);
 				}
+				*/
+				
 				//				System.out.println("Resource: " + resource);
 
 				// last) DURATION
@@ -177,9 +183,11 @@ public class Assignment {
 					if(aURI.getPath() != null){
 						String path = aURI.getPath();
 						//						System.out.println("!!!! path = " + path);
+						/*
 						if(!uniquePaths.contains(path)){
 							uniquePaths.add(path);
 						}
+						*/
 						String extraQueryParts = ""; // IMPORTANT!!!
 						if(aURI.getQuery() != null){
 							String query = aURI.getQuery();
@@ -285,8 +293,8 @@ public class Assignment {
 
 				//String[][] hourAndDuration = new String[hour][duration];
 				// DATES LIST NOT NEEDED
-//				if(!dates.contains(date)){
-//					dates.add(date);
+//				if(!uniqueDates.contains(date)){
+//					uniqueDates.add(date);
 //				};
 				
 				// TODO
@@ -650,7 +658,7 @@ public class Assignment {
 		// for (int i=0; i < array.length; i++) {
 		// DATES LIST NOT NEEDED
 //		if(debug){
-//			for(String d : dates){
+//			for(String d : uniqueDates){
 //				System.out.println("Date is: " + d);
 //			}
 //		}
