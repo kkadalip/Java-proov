@@ -105,34 +105,17 @@ public class Assignment {
 		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
-<<<<<<< HEAD
 		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg 
 		// NOTE: Make duplicate lists for checking case sensitive items if necessary.
-		
+
 		//List<String> uniqueDates = new ArrayList<String>();  // (DEBUG) All unique dates of request lines.
 		//List<String> uniquePaths = new ArrayList<>(); // (DEBUG) All unique paths ie first part of URI. Example: /mobileAppCookie.do or getSubscriptionAuthTokens
 		//List<String> uniqueResources = new ArrayList<>(); // (DEBUG) All unique resources ie second part of URI. Example: /customerPromotions.do?load=true&id=6810D9E1D84736F6FF8F039C747C3DD3&contentId=main_subscription
-		
+
 		// <DATE> <[HOUR][DATA ie requests in one hour]> TreeMap so it would be sorted.
 		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>(); 
 		// [Hours per day] [Request amount per hour] (NB! First element 0, last 23 for rows)
 		int[][] hoursAndRequests = new int[24][1]; 
-=======
-		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg List<String> dates = new ArrayList<String>(); 
-		// NOTE: Make duplicate lists for checking case sensitive items if necessary.
-		
-		// <DATE><[HOUR] [DATA ie requests in one hour]> TreeMap so it would be sorted.
-		Map<String,int[][]> datesAndHoursDataMap = new TreeMap<String,int[][]>();
-		
-		// Creating two dimensional int array for hours per day and request amount per hour. (NB! First element 0, last 23 for rows).
-		int[][] hoursAndRequests = new int[24][1];
-
-		List<String> uniquePaths = new ArrayList<>();
-		List<String> uniqueResources = new ArrayList<>();
-		List<String> uniquePathsWithResources = new ArrayList<>();
-		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
-
->>>>>>> branch 'master' of https://github.com/kkadalip/Java-proov.git
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
 		//List<String> uniquePathsWithResources = new ArrayList<>(); // Replaced this with Map, redundant
 		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
@@ -142,27 +125,19 @@ public class Assignment {
 			int lineNrCounter = 1;
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
-				
-<<<<<<< HEAD
+
 				// Each line consists of either: (NOTE: log usually has 7 to 9 parts per line)
-=======
-				// Each line consists of either:
->>>>>>> branch 'master' of https://github.com/kkadalip/Java-proov.git
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [URI + query string] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:00:02,814 (http--0.0.0.0-28080-245) [CUST:CUS5T27233] /substypechange.do?msisdn=300501633574 in 17
 				// OR
 				// [date] [timestamp] [thread-id (in brackets)] [optional user context (in square brackets)] ||| [requested resource name (one string)] [data payload elements for resource (0..n elements)] [string "in"] [request duration in ms]
 				// eg 2015-08-19 00:04:45,212 (http--0.0.0.0-28080-405) [] updateSubscriptionFromBackend 300445599231 in 203
-				
+
 				// Splitting each line to smaller components using empty spaces between words.
 				String[] wordsOfLine = line.split(" ");
 				// If debug is enabled, printing out line number counter, how many components the line consists of (usually 7 to 9), printing out original line.
 				if(debug)System.out.println("(Line:"+lineNrCounter+") Length: " + wordsOfLine.length + " Line: " + line);
-<<<<<<< HEAD
 				lineNrCounter++;
-=======
-				lineNrCounter++;	
->>>>>>> branch 'master' of https://github.com/kkadalip/Java-proov.git
 
 				// 1) DATE eg 2015-08-19
 				String date = wordsOfLine[0]; 
@@ -254,7 +229,7 @@ public class Assignment {
 				}
 				// make the data value (request count) of current hour bigger by one (hours in rows, data in single column). Basic solution for Key Value Pairs.
 				hoursAndRequests[hour][0]++; 
-				
+
 				//String[][] hourAndDuration = new String[hour][duration];
 				// Putting date and duration holders into datesAndHoursDataMap
 				int[][] temp = datesAndHoursDataMap.get(date); // exact date hours and their data (request amount). In other temp is temporary date data (hour and request amount) holder. //(map.get("test")[0][1]);
@@ -282,7 +257,7 @@ public class Assignment {
 			if(debug)e.printStackTrace();
 			return;
 		}
-		
+
 		// PRINTING OUT ALL UNIQUE RESOURCES IN LOG FILE (130)
 		//		Collections.sort(uniqueResources);
 		//		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
@@ -306,9 +281,9 @@ public class Assignment {
 		//		List<Integer> uniqueHistogramHours = new ArrayList<Integer>(); // Not used
 		List<String> uniqueHistogramDays = new ArrayList<String>();
 		Map<Integer, List<Integer>> hourDurations = new TreeMap<Integer,List<Integer>>();
-		
+
 		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
-		
+
 		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){ // KEY AND VALUE
 			String date = entry.getKey();
 			// FOR HISTOGRAM:
@@ -331,9 +306,7 @@ public class Assignment {
 					if(requestsAmount > 0){
 
 						// FOR HISTOGRAM:
-						//						if(!uniqueHistogramHours.contains(row)){
-						//							uniqueHistogramHours.add(row);
-						//						}
+						//if(!uniqueHistogramHours.contains(row)){uniqueHistogramHours.add(row);}
 
 						// KEY: HOUR, VALUE: DATA (FOR HISTOGRAM)
 						//System.out.println("putting " + row + " and " + requestsAmount);
@@ -478,32 +451,6 @@ public class Assignment {
 
 		}
 
-		// FOR HISTOGRAM
-		// 1) Loop over all dates, hours and their data
-		// int/String hours and datas ArrayList<Integer> list = new ArrayList<Integer>();
-		// I ALREADY HAVE THAT LIST DOH
-		//		int[][] hoursAverageData = new int [24][];
-		//		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){
-		//			//String date = entry.getKey();
-		//			int[][] hoursAndData = entry.getValue();
-		//			// hour
-		//			for(int row = 0; row < hoursAndData.length; row++){
-		//				// hour data
-		//				for(int element = 0; element < hoursAndData[row].length; element++){
-		//					
-		//					//hoursAverageData[row][].
-		//					// NEW                     // OLD
-		//					//inthoursAverageData[row][element]
-		//					//hoursAverageData[row][length+1] = hoursAndData[row][element]; // TODO can't be same, must add
-		//				}
-		//			}
-		//		}
-
-		// 2) Create new holder for int[24][] (24 hours, unlimited numbers for each hour)
-		// 3) Calculate averages for columns [24][x]
-		// 4) Print histogram with average numbers for hours over days
-		// 5) Draw histogram with 00 [x][x][x][x][x][x][x][o][o][o] (78%) or something like that
-
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
 
 		double totalCount = 0.0;
@@ -561,11 +508,11 @@ public class Assignment {
 
 		// for (int i=0; i < array.length; i++) {
 		// DATES LIST NOT NEEDED
-//		if(debug){
-//			for(String d : uniqueDates){
-//				System.out.println("Date is: " + d);
-//			}
-//		}
+		//		if(debug){
+		//			for(String d : uniqueDates){
+		//				System.out.println("Date is: " + d);
+		//			}
+		//		}
 
 		String hourAndRequestsAmount = "";
 		for (int i = 0; i < hoursAndRequests.length; i++) {
@@ -656,4 +603,5 @@ public class Assignment {
 		formatter.parse(str, pos);
 		return str.length() == pos.getIndex();
 	}
-}
+	
+} // END CLASS
