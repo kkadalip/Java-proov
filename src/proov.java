@@ -439,7 +439,7 @@ public class proov {
 		//for(String key : uniquePathsWithResourcesMap.keySet()){ // ONLY KEY
 		//for (String key : uniquePathsWithResourcesMap.values()) { // ONLY VALUES
 
-		List<Integer> uniqueHistogramHours = new ArrayList<Integer>();
+//		List<Integer> uniqueHistogramHours = new ArrayList<Integer>();
 		List<String> uniqueHistogramDays = new ArrayList<String>();
 
 		//		int[][] hourValues = new int [24][];
@@ -471,11 +471,12 @@ public class proov {
 					if(requestsAmount > 0){
 
 						// FOR HISTOGRAM:
-						if(!uniqueHistogramHours.contains(row)){
-							uniqueHistogramHours.add(row);
-						}
+//						if(!uniqueHistogramHours.contains(row)){
+//							uniqueHistogramHours.add(row);
+//						}
+						
 						// KEY: HOUR, VALUE: DATA (FOR HISTOGRAM)
-						System.out.println("putting " + row + " and " + requestsAmount);
+						//System.out.println("putting " + row + " and " + requestsAmount);
 						List<Integer> currentRowInts = hourDurations.get(row);
 						if(currentRowInts == null)
 							currentRowInts = new ArrayList<Integer>();
@@ -516,17 +517,47 @@ public class proov {
 				}
 			}
 		} // END FOR
-		System.out.println("\nHistogram: (Average over " + uniqueHistogramDays.size() + " days)");
-		for(int hour : uniqueHistogramHours){
-			if(hour <10){
-				System.out.println("[Hour: 0" + hour + "]");
-			}else{
-				System.out.println("[Hour: " + hour + "]");
-			}
-		}
+		double uniqueHistogramDaysAmount = uniqueHistogramDays.size();
+		System.out.println("\nHistogram: (Average over " + uniqueHistogramDaysAmount + " days)");
+//		for(int hour : uniqueHistogramHours){
+//			if(hour <10){
+//				System.out.println("[Hour: 0" + hour + "]");
+//			}else{
+//				System.out.println("[Hour: " + hour + "]");
+//			}
+//		}
 
+		double totalRequestsThisHour;
+		double hoursAndAverageDurations[][] = new double[24][1];
 		for (Entry<Integer, List<Integer>> entry : hourDurations.entrySet()){ // KEY AND VALUE
-			System.out.println("Key: "+ entry.getKey() + " Value: " + entry.getValue());
+			int hour = entry.getKey();
+			List<Integer> requestsInHours = entry.getValue();
+			if(debug)System.out.println("Hour: "+ hour + " Value: " + requestsInHours);
+			totalRequestsThisHour = 0;
+			for(int request : requestsInHours){
+				totalRequestsThisHour += request;
+			}
+			double averageTotalRequestsThisHour = totalRequestsThisHour / uniqueHistogramDaysAmount;
+			hoursAndAverageDurations[hour][0]=averageTotalRequestsThisHour;
+			// FOR ONLY UNIQUE HOURS DATA
+//			if(hour < 10){
+//				System.out.println("Hour: 0" + hour + " Avg. requests: " + averageTotalRequestsThisHour);
+//			}else{
+//				System.out.println("Hour: " + hour + " Avg. requests: " + averageTotalRequestsThisHour);
+//			}
+			
+		}
+		double avgDuration = 0;
+		double maxAvgDuration = 0;
+		
+		for(int i=0; i<24; i++){
+			//System.out.println("hoursAndAverageDurations rows are " + hoursAndAverageDurations[i][0]);
+			avgDuration = hoursAndAverageDurations[i][0];
+			if(i < 10){
+				System.out.println("Hour: 0"+i+" Avg. duration: " + avgDuration);
+			}else{
+				System.out.println("Hour: "+i+" Avg. duration: " + avgDuration);
+			}
 			
 		}
 
