@@ -117,7 +117,7 @@ public class Assignment {
 		// [Hours per day] [Request amount per hour] (NB! First element 0, last 23 for rows)
 		int[][] hoursAndRequests = new int[24][1]; 
 		// Unique path and resource as a single string, eg /mainContent.do action=TERMINALFINANCE.
-		List<String> uniquePathsWithResources = new ArrayList<>(); 
+		//List<String> uniquePathsWithResources = new ArrayList<>(); // Replaced this with Map, redundant
 		Map<String, List<String>> uniquePathsWithResourcesMap = new HashMap<String, List<String>>();
 
 		// Using Scanner to read each line in log (text) file.
@@ -199,12 +199,12 @@ public class Assignment {
 						}else{
 							// URI HAS NO QUERY
 						}
-
-						if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
-							if(debug)System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
-							uniquePathsWithResources.add(path + " " + extraQueryParts);
-							// TODO UNIQUE PATHS NEEDS TO HOLD ALL DURATIONS TO CALCULATE AVERAGE LATER
-						}
+						// if unique URI paths (first half before ?) with resources (eg /mainContent.do with extras action=TERMINALFINANCE contentId=main_subscription)
+						// doesn't already contain current path+extras then add path and its extra query parts to String array uniquePathsWithResources
+						//if(!uniquePathsWithResources.contains(path + " " + extraQueryParts)){
+						//	if(debug)System.out.println("Addig path: " + path + " with extraQueryParts: " + extraQueryParts);
+						//	uniquePathsWithResources.add(path + " " + extraQueryParts);
+						//}
 						// SAME THING WITH MAP AND DURATION (Key Value Pairs)
 						if(!uniquePathsWithResourcesMap.containsKey(path + " " + extraQueryParts)){
 							if(debug)System.out.println("ADDING PATH w extras: " + path + " " + extraQueryParts);
