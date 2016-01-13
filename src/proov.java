@@ -117,6 +117,11 @@ public class proov {
 		// eg "java -jar dist/Tulemus-20160112.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
 		String fileDir = "";
 		File file;
+		// No "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
+		if(!logFileNameFromParams.contains(".")){
+			logFileNameFromParams += ".log";
+		}
+			
 		if(logFileNameFromParams.contains("\\") || logFileNameFromParams.contains("/")){
 			fileDir = logFileNameFromParams;
 			file = new File(fileDir); 
@@ -457,6 +462,23 @@ public class proov {
 
 		// FOR HISTOGRAM
 		// 1) Loop over all dates, hours and their data
+		// int/String hours and datas ArrayList<Integer> list = new ArrayList<Integer>();
+		int[][] hoursAverageData = new int [24][];
+		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){
+			//String date = entry.getKey();
+			int[][] hoursAndData = entry.getValue();
+			// hour
+			for(int row = 0; row < hoursAndData.length; row++){
+				// hour data
+				for(int element = 0; element < hoursAndData[row].length; element++){
+					//hoursAverageData[row][].
+					// NEW                     // OLD
+					//inthoursAverageData[row][element]
+					//hoursAverageData[row][length+1] = hoursAndData[row][element]; // TODO can't be same, must add
+				}
+			}
+
+		}
 		// 2) Create new holder for int[24][] (24 hours, unlimited numbers for each hour)
 		// 3) Calculate averages for columns [24][x]
 		// 4) Print histogram with average numbers for hours over days
