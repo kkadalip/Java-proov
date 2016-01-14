@@ -282,36 +282,33 @@ public class Assignment {
 		List<String> uniqueHistogramDays = new ArrayList<String>();
 		Map<Integer, List<Integer>> hourDurations = new TreeMap<Integer,List<Integer>>();
 
-		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
-
+		// Looping over date (String) and ([hour][requests in hour amount]) data map
 		for (Map.Entry<String, int[][]> entry : datesAndHoursDataMap.entrySet()){ // KEY AND VALUE
 			String date = entry.getKey();
-			// FOR HISTOGRAM:
+			// FOR HISTOGRAM to count the amount of unique histogram days (ie over how many days log lasted):
 			if(!uniqueHistogramDays.contains(date)){
 				uniqueHistogramDays.add(date);
 			}
-			//if(!hourDurations.containsKey(date)){hourDurations.put(date);}
-
+			//if(!hourDurations.containsKey(date)){hourDurations.put(date);} // Not using this list of hour durations anymore.
+			// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 			System.out.println("-----Date:"+date+"-----");
 			int[][] hoursAndData = entry.getValue();
-
-			for(int row = 0; row < hoursAndData.length; row++){ // loop over ROWS
-				//System.out.println("row is " + row);
-				for(int element = 0; element < hoursAndData[row].length; element++){ // loop over COLUMNS:
+			for(int i = 0; i < hoursAndData.length; i++){ // loop over ROWS, i ie row value is hour 0 to 23
+				for(int element = 0; element < hoursAndData[i].length; element++){ // loop over COLUMNS:
 					//System.out.printf("Row: %d Element: %d Value: %d\n", row, element, container[row][element]);
-					int requestsAmount = hoursAndData[row][element];
+					int requestsAmount = hoursAndData[i][element];
 					if(requestsAmount > 0){
-
-						// FOR HISTOGRAM:
+						// FOR HISTOGRAM to get unique hours, however not important in my case since I'm showing a whole 24h period including empty hours:
 						//if(!uniqueHistogramHours.contains(row)){uniqueHistogramHours.add(row);}
 
 						// KEY: HOUR, VALUE: DATA (FOR HISTOGRAM)
 						//System.out.println("putting " + row + " and " + requestsAmount);
-						List<Integer> currentRowInts = hourDurations.get(row);
-						if(currentRowInts == null)
+						List<Integer> currentRowInts = hourDurations.get(i);
+						if(currentRowInts == null){
 							currentRowInts = new ArrayList<Integer>();
+						}
 						currentRowInts.add(requestsAmount);
-						hourDurations.put(row, currentRowInts); //requestsAmount);
+						hourDurations.put(i, currentRowInts); //requestsAmount);
 
 						// eg hourValues[hour 10][1000]th slot for data
 						//						if(hourValues[row] == null){
@@ -336,12 +333,12 @@ public class Assignment {
 						//						//hourValues[row][0] ++;
 						//						slotToPutData++;
 
-						if(row < 10){
+						if(i < 10){
 							//System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
-							System.out.println("[Hour: 0"+ row + "] [Requests: " + requestsAmount +"]");
+							System.out.println("[Hour: 0"+ i + "] [Requests: " + requestsAmount +"]");
 						}else{
 							//System.out.println("[Hour: "+ row + "] [Requests: " + element +"]");
-							System.out.println("[Hour: "+ row + "] [Requests: " + requestsAmount +"]");
+							System.out.println("[Hour: "+ i + "] [Requests: " + requestsAmount +"]");
 						}
 					}
 				}
