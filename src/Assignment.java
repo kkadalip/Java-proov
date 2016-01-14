@@ -290,17 +290,14 @@ public class Assignment {
 			if(!uniqueHistogramDays.contains(date)){
 				uniqueHistogramDays.add(date);
 			}
-			//			if(!hourDurations.containsKey(date)){
-			//				hourDurations.put(date);
-			//			}
+			//if(!hourDurations.containsKey(date)){hourDurations.put(date);}
 
 			System.out.println("-----Date:"+date+"-----");
 			int[][] hoursAndData = entry.getValue();
-			// ROWS
-			for(int row = 0; row < hoursAndData.length; row++){
+
+			for(int row = 0; row < hoursAndData.length; row++){ // loop over ROWS
 				//System.out.println("row is " + row);
-				// COLUMNS:
-				for(int element = 0; element < hoursAndData[row].length; element++){
+				for(int element = 0; element < hoursAndData[row].length; element++){ // loop over COLUMNS:
 					//System.out.printf("Row: %d Element: %d Value: %d\n", row, element, container[row][element]);
 					int requestsAmount = hoursAndData[row][element];
 					if(requestsAmount > 0){
@@ -424,11 +421,8 @@ public class Assignment {
 			//percentage = avgRequests / maxRequestsInHour * 100;
 			percentage = avgRequests / totalAverageAmountOfRequests * 100; // ALTERNATIVELY CURRENT REQUESTS / ALL REQUESTS * 100 (not averages)
 			// TAKE ALL TOTAL AMOUNT INTO ACCOUNT
-
 			//System.out.println("percentage is " + percentage);
-			// 78 / 10
-			// is 7.8
-			// rounded 8 boxes
+			// eg 78 / 10 is 7.8 and when rounded then 8 boxes
 			howManyBoxesFilled = (int) Math.round(percentage / 10);
 			//System.out.println("corresponds to boxes " + howManyBoxesFilled);
 			if(howManyBoxesFilled <= 0){
@@ -448,7 +442,6 @@ public class Assignment {
 			}else{
 				System.out.println("Hour: "+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Total: "+ dfNoDecimals.format(totalRequests) +" Avg: " + df.format(avgRequests) + " req./hour");
 			}
-
 		}
 
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
@@ -481,8 +474,8 @@ public class Assignment {
 			}
 		} // FOR END
 
-		// TODO CREATE A NEW KVP String String Map to sort the path + duration.
-		// TODO Then use command line optional parameter to display top n amount.
+		// notTODO CREATE A NEW KVP String String Map to sort the path + duration.
+		// notTODO Then use command line optional parameter to display top n amount.
 
 		//printMap(pathsWithAverageDuration);
 
