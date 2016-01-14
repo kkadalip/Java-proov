@@ -366,24 +366,21 @@ public class Assignment {
 		System.out.println("Total amount of requests: " + totalRequestsOverall);
 
 		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour)); // Not needed to display.
-		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
+		
 		String histogramBoxes = "";
 		double percentage = 0;
-		//double roundedPercentage = 0;
-		int howManyBoxesFilled = 0;
-
+		//double roundedPercentage = 0; // Do not need a holder for rounded percentage anymore since I'm dividing by 10 first and getting how many boxes via rounding that instead.
+		int howManyBoxesFilled = 0; // After rounding and dividing by 10 we get how many [x] or [ ] boxes will be filled.
+		// Looping through hours. i starts reading from 0 because 0th element is first element in array and 23rd is last ie 24th element in this case.
 		for(int i=0; i<24; i++){
 			//System.out.println("hoursAndAverageDurations rows are " + hoursAndAverageDurations[i][0]);
-			avgRequests = averageRequestsPerHour[i][0];
-			totalRequests = totalRequestsPerHour[i][0];
-			//System.out.println("avg dur " + avgDuration + " / " + " max dur " + maxAvgDuration + " * 100");
-			//percentage = avgRequests / maxRequestsInHour * 100;
-			percentage = avgRequests / totalAverageAmountOfRequests * 100; // ALTERNATIVELY CURRENT REQUESTS / ALL REQUESTS * 100 (not averages)
-			// TAKE ALL TOTAL AMOUNT INTO ACCOUNT
-			//System.out.println("percentage is " + percentage);
+			avgRequests = averageRequestsPerHour[i][0]; // getting average requests in one hour
+			totalRequests = totalRequestsPerHour[i][0]; // getting total requests in one hour 
+			percentage = avgRequests / totalAverageAmountOfRequests * 100; // Taking total amount into account! (TODO improve ALTERNATIVELY CURRENT REQUESTS / (days / ALL REQUESTS) * 100 (not averages)). 
 			// eg 78 / 10 is 7.8 and when rounded then 8 boxes
 			howManyBoxesFilled = (int) Math.round(percentage / 10);
-			//System.out.println("corresponds to boxes " + howManyBoxesFilled);
+			//System.out.println("Percentage: " + percentage +" Boxes filled: " + howManyBoxesFilled);
+			// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 			if(howManyBoxesFilled <= 0){
 				histogramBoxes = "[ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]";
 			}else{
