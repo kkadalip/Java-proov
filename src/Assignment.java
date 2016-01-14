@@ -23,64 +23,14 @@ public class Assignment {
 	public static void main(String[] args) {
 		// Setting starting time for calculating program run duration in milliseconds.
 		long startTime = System.currentTimeMillis();
-		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
-		int nNumberFromParams = 0;
-		String logFileNameFromParams = "";
-		// Debug parameter, set true to see debug log in console.
-		boolean debug = false;
-
+		boolean debug = false; // Debug parameter, set true to see debug log in console.
 		// START ------------- CHECKING COMMAND LINE ARGUMENTS ---------------
-
-		// Setting numeric command line argument as n, text argument as file location/name
-		if(args.length > 0){
-			if(debug)System.out.println("We have "+ args.length +" command line arguments!");
-			// If user has correct amount of arguments ie one (log file name or location with name) or two (log file and how many average request durations).
-			if(args.length <3){
-				// Checking for command line arguments -h, -? and -help, if any of them exists in command line arguments, show help menu and stop program.
-				List<String> argsList = Arrays.asList(args);
-				boolean userNeedsHelp = argsList.contains("-help") || argsList.contains("-h") || argsList.contains("-?");
-				if(userNeedsHelp){
-					// Printing help menu:
-					if(debug)System.out.println("User needs help!!!!!");
-					System.out.println("\nUsage: java -jar jarfile <logfile> [number *optional*]");
-					System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar into dist folder)");
-					System.out.println("Options:");
-					System.out.println("-help, -h, -?,        print this help message and exit");
-					System.out.println("jarfile,              location of this .jar file");
-					System.out.println("<logfile>,            file name with extension (if log file is in command prompt working directory) or exact location of log file");
-					System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
-					// End calculating program run duration.
-					long endTime   = System.currentTimeMillis();
-					long totalTime = endTime - startTime;
-					System.out.println();
-					System.out.println("Program ran for " + totalTime + " milliseconds.");
-					return;
-				}else{
-					if(debug)System.out.println("User doesn't need help.");
-					for(String arg : args){
-						// If a numeric argument is found from command line arguments, assign it as n.
-						// This is good because if user enters n before log location the program will still run correctly.
-						if(isNumeric(arg)){
-							if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
-							nNumberFromParams = Integer.parseInt(arg);
-						}else{
-							if(debug)System.out.println("Command line argument "+ arg +" is not numeric, not using as n. Using as log name.");
-							logFileNameFromParams = arg;
-						}
-					}
-				}
-			}else{ 
-				// User has more than 2 arguments, program stops and warns user.
-				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
-				return;
-			}
-		}else{
-			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
-			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
-			return;
-		}
-
+		CheckCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
+		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
+		int nNumberFromParams = CheckCommandLineArgumentsForN(args, debug);
+		String logFileNameFromParams = CheckCommandLineArgumentsForLogFile(args, debug);
 		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
+		
 		// START ------------- CHECK LOG FILE LOCATION --------------------
 
 		// Check if user is entering exact log file location:
@@ -319,7 +269,7 @@ public class Assignment {
 			} // END FOR hoursAndData ROWS
 		} // END FOR
 		//for(int hour : uniqueHistogramHours){System.out.println("[Hour: " + hour + "]");} // (DEBUG) Unique hours that have any data
-		
+
 		// Amount of unique histogram days (used to calculate averages ie how many requests per hour in one day on average)
 		double uniqueHistogramDaysAmount = uniqueHistogramDays.size();
 		System.out.println("\nHistogram of hourly number of requests. Average calculated over " + (int)uniqueHistogramDaysAmount + " day(s)");
@@ -350,12 +300,12 @@ public class Assignment {
 			// FOR ONLY UNIQUE HOURS DATA (eg Hour: 06 Avg. requests: 016.17 but only for hours that have some data)
 			//System.out.println("Hour: " + hour + " Avg. requests: " + df.format(averageTotalRequestsThisHour));
 		}
-		
+
 		double avgRequests = 0;
 		double totalRequests = 0; // in one hour
 		//double maxRequestsInHour = 0; // Max average requests not needed for displaying. (Was used for % at first but not anymore, bad solution)
 		int totalAverageAmountOfRequests = 0; // Total AVERAGE amount of requests (TODO Improve this solution in the future. Use day amount divided by avg day total ie total / days or smth.)
-		
+
 		for(int i=0; i<averageRequestsPerHour.length; i++){
 			double tmp = averageRequestsPerHour[i][0];
 			totalAverageAmountOfRequests += tmp;
@@ -366,7 +316,7 @@ public class Assignment {
 		System.out.println("Total amount of requests: " + totalRequestsOverall);
 
 		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour)); // Not needed to display.
-		
+
 		String histogramBoxes = "";
 		double percentage = 0;
 		//double roundedPercentage = 0; // Do not need a holder for rounded percentage anymore since I'm dividing by 10 first and getting how many boxes via rounding that instead.
@@ -401,7 +351,7 @@ public class Assignment {
 				System.out.println("Hour: "+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Total: "+ dfNoDecimals.format(totalRequests) +" Avg: " + df.format(avgRequests) + " req./hour");
 			}
 		}
-		
+
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
 		double totalCount = 0.0;
 		int sum = 0;
@@ -431,7 +381,7 @@ public class Assignment {
 				if(debug)System.out.println(path + " Average duration: " + "??? ms.");
 			}
 		} // FOR END
-		
+
 		// To print all unique paths w resources (the field=names) UNSORTED and with AVERAGE DURATIONS
 		//printMap(pathsWithAverageDuration);
 		// SAME THING AS SORTED FOLLOWS:
@@ -465,10 +415,79 @@ public class Assignment {
 				if(debug)System.out.println(hourAndRequestsAmount);
 			}
 		}
+		stopReadingTimeAndReturn(startTime);
+	} // END of MAIN method
+	
+	public static void CheckCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
+		if(args.length > 0){
+			List<String> argsList = Arrays.asList(args);
+			// Checking for command line arguments -h, -? and -help, if any of them exists in command line arguments, show help menu and stop program.
+			boolean userNeedsHelp = argsList.contains("-help") || argsList.contains("-h") || argsList.contains("-?");
+			if(userNeedsHelp){
+				// Printing help menu:
+				//if(debug)System.out.println("User needs help!!!!!");
+				System.out.println("\nUsage: java -jar jarfile <logfile> [number *optional*]");
+				System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar into dist folder)");
+				System.out.println("Options:");
+				System.out.println("-help, -h, -?,        print this help message and exit");
+				System.out.println("jarfile,              location of this .jar file");
+				System.out.println("<logfile>,            file name with extension (if log file is in command prompt working directory) or exact location of log file");
+				System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
+				// End calculating program run duration.
+				stopReadingTimeAndReturn(startTime);
+				return; // User needs help, stopping program after having printed out help menu and program duration
+			}else if(!userNeedsHelp && args.length > 2){
+				// More than 2 arguments and no help argument
+				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
+			}
+		}else{
+			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
+			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
+			stopReadingTimeAndReturn(startTime);
+			return; // User needs help, stopping program after having printed out help menu and program duration
+		}
+	}
+	
+	public static String CheckCommandLineArgumentsForLogFile(String[] args, boolean debug){
+		// Setting numeric command line argument as n
+		if(args.length > 0 && args.length < 3){
+			for(String arg : args){
+				if(!isNumeric(arg)){
+					if(debug)System.out.println("Command line argument "+ arg +" not numeric, using as log name/location.");
+					return arg;
+				}
+			}
+		}else{
+			if(debug)System.out.println("Could not find file name/location from command line arguments.");
+			return "";	
+		}
+		return "";
+	}
+	
+	public static int CheckCommandLineArgumentsForN(String[] args, boolean debug){
+		// Setting numeric command line argument as n
+		if(args.length > 0 && args.length < 3){
+			for(String arg : args){
+				// If a numeric argument is found from command line arguments, assign it as n.
+				// This is good because if user enters n before log location the program will still run correctly.
+				if(isNumeric(arg)){
+					if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
+					return Integer.parseInt(arg);
+				}
+			}
+		}else{
+			if(debug)System.out.println("Could not find n from command line arguments.");
+			return 0;			
+		}
+		return 0;
+	}
+
+	public static void stopReadingTimeAndReturn(long startTime){
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
-	} // END of MAIN method
+		return;
+	}
 
 	// For sorting map by comparator
 	private static Map<String, Double> sortByComparator(Map<String, Double> unsortMap) {
@@ -492,7 +511,7 @@ public class Assignment {
 		}
 		return sortedMap;
 	}
-	
+
 	// Overload to use 3 param printMap without n
 	public static void printMap(Map<String, Double> map) {
 		printMap(map, 0);
