@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AntJavaProject" default="main" basedir=".">
+<project name="Java-proov project" default="main" basedir=".">
 	<description>
-		Create a Java Project (JAR) with Ant build script
+		Create a Java Project (JAR) with Ant build script.
 	</description>
 	
 	<property name="projectName" value="Result" />
@@ -15,13 +15,9 @@
 	<property name="dist.dir" location="dist" />
 
 	<target name="init">
-		<!-- Create the time stamp -->
-		<tstamp />
-		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${build.dir}" />
 	</target>
 
-	<!-- kompileerimiseks vajaminev ja tegevused, clean ajutiselt -->
 	<target name="compile" depends="init" description="compile the source ">
 		<!-- Compile the java code from ${src.dir} into ${build.dir} -->
 		<javac includeantruntime="false" srcdir="${src.dir}" destdir="${build.dir}" />
@@ -33,10 +29,8 @@
 		<mkdir dir="${dist.dir}" />
 
 		<!-- Put everything in ${build} into the {$projectName}-${DSTAMP}.jar file -->
-		<!-- <jar jarfile="${dist.dir}/${projectName}-${DSTAMP}.jar" basedir="${build.dir}" > -->
 		<jar jarfile="${dist.dir}/assignment.jar" basedir="${build.dir}" >
 		    <manifest>
-			<!-- create an executable Jar, MAIN CLASS java -cp dist/DateUtils-20141030.jar com.karl.core.utils.DateUtils -->
 			<attribute name="Main-Class" value="Assignment" />
 		    </manifest>
 		</jar>
