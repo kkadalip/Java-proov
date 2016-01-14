@@ -320,7 +320,7 @@ public class Assignment {
 		} // END FOR
 		//for(int hour : uniqueHistogramHours){System.out.println("[Hour: " + hour + "]");} // (DEBUG) Unique hours that have any data
 		
-		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
+		// Amount of unique histogram days (used to calculate averages ie how many requests per hour in one day on average)
 		double uniqueHistogramDaysAmount = uniqueHistogramDays.size();
 		System.out.println("\nHistogram of hourly number of requests. Average calculated over " + (int)uniqueHistogramDaysAmount + " day(s)");
 
@@ -333,6 +333,7 @@ public class Assignment {
 		//double hoursAndAverageDurations[][] = new double[24][1];
 		double averageRequestsPerHour[][] = new double[24][1]; // FOR AVERAGES IN HISTOGRAM - each line
 		double totalRequestsPerHour[][] = new double[24][1]; // FOR TOTALS IN HISTOGRAM - each line
+		// Looping over all hours and their list of durations to help calculate averages
 		for (Entry<Integer, List<Integer>> entry : hourDurations.entrySet()){ // KEY AND VALUE
 			int hour = entry.getKey();
 			List<Integer> requestsInHours = entry.getValue();
@@ -347,32 +348,25 @@ public class Assignment {
 			averageRequestsPerHour[hour][0]=averageTotalRequestsThisHour; // Average requests amount per hour
 			totalRequestsPerHour[hour][0] = totalRequestsThisHour; // Total request amount per hour
 			// FOR ONLY UNIQUE HOURS DATA (eg Hour: 06 Avg. requests: 016.17 but only for hours that have some data)
-			//if(hour < 10){
-			//	System.out.println("Hour: 0" + hour + " Avg. requests: " + df.format(averageTotalRequestsThisHour));
-			//}else{
-			//	System.out.println("Hour: " + hour + " Avg. requests: " + df.format(averageTotalRequestsThisHour));
-			//}
+			//System.out.println("Hour: " + hour + " Avg. requests: " + df.format(averageTotalRequestsThisHour));
 		}
-
-		// MAX WRONG BECAUSE THIS IS NOT DIVIDED BY INSTANCE AMOUNT?
+		
 		double avgRequests = 0;
 		double totalRequests = 0; // in one hour
-		//double maxRequestsInHour = 0;
-		int totalAverageAmountOfRequests = 0; // TODO do not use this in the future, just use total amount divided by days or something better
-
+		//double maxRequestsInHour = 0; // Max average requests not needed for displaying. (Was used for % at first but not anymore, bad solution)
+		int totalAverageAmountOfRequests = 0; // Total AVERAGE amount of requests (TODO Improve this solution in the future. Use day amount divided by avg day total ie total / days or smth.)
+		
 		for(int i=0; i<averageRequestsPerHour.length; i++){
 			double tmp = averageRequestsPerHour[i][0];
 			totalAverageAmountOfRequests += tmp;
-			//if(tmp > maxRequestsInHour){
-			//	maxRequestsInHour = tmp;
-			//}
+			//if(tmp > maxRequestsInHour){maxRequestsInHour = tmp;} // To find max requests/hour. Do not need to display this though.
 		}
 
 		//System.out.println("Total amount of requests: " + totalAverageAmountOfRequests); // adds averages together, NOT THE OVERALL TOTAL!!!! USELESS DATA
 		System.out.println("Total amount of requests: " + totalRequestsOverall);
 
-		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour));
-		// Max avg dur is 100%
+		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour)); // Not needed to display.
+		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 		String histogramBoxes = "";
 		double percentage = 0;
 		//double roundedPercentage = 0;
@@ -439,16 +433,12 @@ public class Assignment {
 			}
 		} // FOR END
 
-		// notTODO CREATE A NEW KVP String String Map to sort the path + duration.
-		// notTODO Then use command line optional parameter to display top n amount.
-
 		//printMap(pathsWithAverageDuration);
 
-		// To sort Map by keys, use TreeMap
-		// TreeMap is unable to sort the Map values, instead, we should use Comparator
-		// Convert Map to List, sort list by Comparator, put list back to Map
-		// Map ---> List ---> Sort --> SortedList ---> Map
-
+		// NOTE: To sort Map by keys, use TreeMap
+		// NOTE: TreeMap is unable to sort the Map values, instead, we should use Comparator
+		// NOTE: Convert Map to List, sort list by Comparator, put list back to Map
+		// NOTE: Map ---> List ---> Sort --> SortedList ---> Map
 		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
 
 		// PRINTING SORTED MAP AND SHOWING n AMOUNT OF HIGHEST AVERAGE DURATION RESULTS
