@@ -431,15 +431,16 @@ public class Assignment {
 				if(debug)System.out.println(path + " Average duration: " + "??? ms.");
 			}
 		} // FOR END
-		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
+		
+		// To print all unique paths w resources (the field=names) UNSORTED and with AVERAGE DURATIONS
 		//printMap(pathsWithAverageDuration);
-
+		// SAME THING AS SORTED FOLLOWS:
 		// NOTE: To sort Map by keys, use TreeMap
 		// NOTE: TreeMap is unable to sort the Map values, instead, we should use Comparator
 		// NOTE: Convert Map to List, sort list by Comparator, put list back to Map
 		// NOTE: Map ---> List ---> Sort --> SortedList ---> Map
 		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
-
+		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 		// PRINTING SORTED MAP AND SHOWING n AMOUNT OF HIGHEST AVERAGE DURATION RESULTS
 		String sortedResultsHeader = "\n[Average duration][Request]";
 		if(nNumberFromParams>0){
