@@ -28,11 +28,105 @@ public class Assignment {
 		stopReadingTimeAndExit(startTime);
 	} // END of MAIN method
 
+	public static void checkCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
+		if(args.length > 0){
+			List<String> argsList = Arrays.asList(args);
+			// Checking for command line arguments -h, -? and -help, if any of them exists in command line arguments, show help menu and stop program.
+			boolean userNeedsHelp = argsList.contains("-help") || argsList.contains("-h") || argsList.contains("-?");
+			if(userNeedsHelp){
+				// Printing help menu:
+				//if(debug)System.out.println("User needs help!!!!!");
+				System.out.println("\nUsage: java -jar jarfile <logfile> [number *optional*]");
+				System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar into dist folder)");
+				System.out.println("Options:");
+				System.out.println("-help, -h, -?,        print this help message and exit");
+				System.out.println("jarfile,              location of this .jar file");
+				System.out.println("<logfile>,            file name with extension (if log file is in command prompt working directory) or exact location of log file");
+				System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
+				// End calculating program run duration.
+				stopReadingTimeAndExit(startTime);
+				System.exit(0);
+				return; // User needs help, stopping program after having printed out help menu and program duration
+			}else if(!userNeedsHelp && args.length > 2){
+				// More than 2 arguments and no help argument
+				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
+				stopReadingTimeAndExit(startTime);
+				System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
+			}
+		}else{
+			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
+			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
+			stopReadingTimeAndExit(startTime);
+			System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
+		}
+	}
+
+	public static File checkCommandLineArgumentsForLogFile(String[] args, long startTime, boolean debug){
+		// Setting numeric command line argument as n
+		String fileDir = "";
+		File file = null;		
+		if(args.length > 0 && args.length < 3){
+			// eg logfile.log or C:\Users\karlk\Desktop\logfile.log or just logfile in "java -jar dist/Assignment.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
+			for(String arg : args){
+				if(!isNumeric(arg)){
+					if(debug)System.out.println("Command line argument "+ arg +" not numeric, using as log name/location.");
+					// Checking of non-numeric argument is a suitable file
+					// 1) Check if user is entering exact log file location: (If log file parameter contains slashes, this means that user is trying to give exact location)
+					if(arg.contains("\\") || arg.contains("/")){
+						fileDir = arg;
+					}else{
+						// "user.dir" is the working directory of console. (eg C:\Users\karlk\workspace\Java-proov)
+						fileDir += System.getProperty("user.dir") + "/" + arg; // logFileNameFromParams eg working directory with parameter timing.log
+						// 2) Check if no "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
+						if(!arg.contains(".")){ // arg is hopefully log file name from params
+							fileDir += ".log";
+						}
+						System.out.println("filedir is " + arg);
+						file = new File(fileDir); 
+						return file;
+					}
+				}
+				//if(debug)System.out.println("Could not find file name/location from command line arguments.");
+				//return null;	
+			}
+		}
+		if(file == null){
+			System.out.println("Log file location parameter not found, type -h for help.");
+			stopReadingTimeAndExit(startTime);
+		}
+		return null;
+	}
+
+	public static int checkCommandLineArgumentsForN(String[] args, boolean debug){
+		// Setting numeric command line argument as n
+		if(args.length > 0 && args.length < 3){
+			for(String arg : args){
+				// If a numeric argument is found from command line arguments, assign it as n.
+				// This is good because if user enters n before log location the program will still run correctly.
+				if(isNumeric(arg)){
+					if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
+					return Integer.parseInt(arg);
+				}
+			}
+		}else{
+			if(debug)System.out.println("Could not find n from command line arguments.");
+			return 0;			
+		}
+		return 0;
+	}
+
+	public static void stopReadingTimeAndExit(long startTime){
+		long endTime   = System.currentTimeMillis();
+		long totalTime = endTime - startTime;
+		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
+		System.exit(0);
+	}
+
 	public static void createAndPrintHistogram(String[] args, long startTime, boolean debug){
 		// START ------------- CHECKING COMMAND LINE ARGUMENTS ---------------
 		checkCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
 		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
-		int nNumberFromParams = CheckCommandLineArgumentsForN(args, debug);
+		int nNumberFromParams = checkCommandLineArgumentsForN(args, debug);
 		File file = checkCommandLineArgumentsForLogFile(args, startTime, debug); // instead of String logFileNameFromParams
 		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
 
@@ -398,100 +492,6 @@ public class Assignment {
 				if(debug)System.out.println(hourAndRequestsAmount);
 			}
 		}
-	}
-	
-	public static void checkCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
-		if(args.length > 0){
-			List<String> argsList = Arrays.asList(args);
-			// Checking for command line arguments -h, -? and -help, if any of them exists in command line arguments, show help menu and stop program.
-			boolean userNeedsHelp = argsList.contains("-help") || argsList.contains("-h") || argsList.contains("-?");
-			if(userNeedsHelp){
-				// Printing help menu:
-				//if(debug)System.out.println("User needs help!!!!!");
-				System.out.println("\nUsage: java -jar jarfile <logfile> [number *optional*]");
-				System.out.println("To re-build with ant use command: ant main (deletes dist folder, re-compiles .jar into dist folder)");
-				System.out.println("Options:");
-				System.out.println("-help, -h, -?,        print this help message and exit");
-				System.out.println("jarfile,              location of this .jar file");
-				System.out.println("<logfile>,            file name with extension (if log file is in command prompt working directory) or exact location of log file");
-				System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
-				// End calculating program run duration.
-				stopReadingTimeAndExit(startTime);
-				System.exit(0);
-				return; // User needs help, stopping program after having printed out help menu and program duration
-			}else if(!userNeedsHelp && args.length > 2){
-				// More than 2 arguments and no help argument
-				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
-				stopReadingTimeAndExit(startTime);
-				System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
-			}
-		}else{
-			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
-			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
-			stopReadingTimeAndExit(startTime);
-			System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
-		}
-	}
-
-	public static File checkCommandLineArgumentsForLogFile(String[] args, long startTime, boolean debug){
-		// Setting numeric command line argument as n
-		String fileDir = "";
-		File file = null;		
-		if(args.length > 0 && args.length < 3){
-			// eg logfile.log or C:\Users\karlk\Desktop\logfile.log or just logfile in "java -jar dist/Assignment.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
-			for(String arg : args){
-				if(!isNumeric(arg)){
-					if(debug)System.out.println("Command line argument "+ arg +" not numeric, using as log name/location.");
-					// Checking of non-numeric argument is a suitable file
-					// 1) Check if user is entering exact log file location: (If log file parameter contains slashes, this means that user is trying to give exact location)
-					if(arg.contains("\\") || arg.contains("/")){
-						fileDir = arg;
-					}else{
-						// "user.dir" is the working directory of console. (eg C:\Users\karlk\workspace\Java-proov)
-						fileDir += System.getProperty("user.dir") + "/" + arg; // logFileNameFromParams eg working directory with parameter timing.log
-						// 2) Check if no "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
-						if(!arg.contains(".")){ // arg is hopefully log file name from params
-							fileDir += ".log";
-						}
-						System.out.println("filedir is " + arg);
-						file = new File(fileDir); 
-						return file;
-					}
-				}
-				//if(debug)System.out.println("Could not find file name/location from command line arguments.");
-				//return null;	
-			}
-		}
-		if(file == null){
-			System.out.println("Log file location parameter not found, type -h for help.");
-			stopReadingTimeAndExit(startTime);
-		}
-		return null;
-	}
-
-	public static int CheckCommandLineArgumentsForN(String[] args, boolean debug){
-		// Setting numeric command line argument as n
-		if(args.length > 0 && args.length < 3){
-			for(String arg : args){
-				// If a numeric argument is found from command line arguments, assign it as n.
-				// This is good because if user enters n before log location the program will still run correctly.
-				if(isNumeric(arg)){
-					if(debug)System.out.println("Command line argument "+ arg +" is numeric, using as n.");
-					return Integer.parseInt(arg);
-				}
-			}
-		}else{
-			if(debug)System.out.println("Could not find n from command line arguments.");
-			return 0;			
-		}
-		return 0;
-	}
-
-	public static void stopReadingTimeAndExit(long startTime){
-		long endTime   = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
-		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
-		System.exit(0);
 	}
 
 	// For sorting map by comparator
