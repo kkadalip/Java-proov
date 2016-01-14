@@ -28,31 +28,9 @@ public class Assignment {
 		CheckCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
 		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
 		int nNumberFromParams = CheckCommandLineArgumentsForN(args, debug);
-		String logFileNameFromParams = CheckCommandLineArgumentsForLogFile(args, debug);
+		File file = CheckCommandLineArgumentsForLogFile(args, debug); // instead of String logFileNameFromParams
 		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
-		
-		// START ------------- CHECK LOG FILE LOCATION --------------------
 
-		// Check if user is entering exact log file location:
-		// eg "java -jar dist/Assignment.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
-		String fileDir = "";
-		File file;
-		// No "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
-		if(!logFileNameFromParams.contains(".")){
-			logFileNameFromParams += ".log";
-		}
-
-		// Log file parameter contains slashes, this means that user is trying to give exact location
-		if(logFileNameFromParams.contains("\\") || logFileNameFromParams.contains("/")){
-			fileDir = logFileNameFromParams;
-			file = new File(fileDir); 
-		}else{
-			// Otherwise assume user is entering log file name that resides in console working directory:
-			fileDir = System.getProperty("user.dir"); // The working directory of console (user dir). (eg C:\Users\karlk\workspace\Java-proov)
-			file = new File(fileDir + "/" + logFileNameFromParams); // eg working directory with parameter timing.log
-		}
-
-		// END ------------- CHECK LOG FILE LOCATION -----------------------------------------
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
 		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg 
@@ -417,7 +395,7 @@ public class Assignment {
 		}
 		stopReadingTimeAndReturn(startTime);
 	} // END of MAIN method
-	
+
 	public static void CheckCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
 		if(args.length > 0){
 			List<String> argsList = Arrays.asList(args);
@@ -435,35 +413,54 @@ public class Assignment {
 				System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
 				// End calculating program run duration.
 				stopReadingTimeAndReturn(startTime);
+				System.exit(0);
 				return; // User needs help, stopping program after having printed out help menu and program duration
 			}else if(!userNeedsHelp && args.length > 2){
 				// More than 2 arguments and no help argument
 				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
+				stopReadingTimeAndReturn(startTime);
+				System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
 			}
 		}else{
 			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
 			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
 			stopReadingTimeAndReturn(startTime);
-			return; // User needs help, stopping program after having printed out help menu and program duration
+			System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
 		}
 	}
-	
-	public static String CheckCommandLineArgumentsForLogFile(String[] args, boolean debug){
+
+	public static File CheckCommandLineArgumentsForLogFile(String[] args, boolean debug){
 		// Setting numeric command line argument as n
 		if(args.length > 0 && args.length < 3){
+			// eg logfile.log or C:\Users\karlk\Desktop\logfile.log or just logfile in "java -jar dist/Assignment.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
+			String fileDir = "";
+			File file;
 			for(String arg : args){
 				if(!isNumeric(arg)){
 					if(debug)System.out.println("Command line argument "+ arg +" not numeric, using as log name/location.");
-					return arg;
+					// Checking of non-numeric argument is a suitable file
+					// 1) Check if user is entering exact log file location: (If log file parameter contains slashes, this means that user is trying to give exact location)
+					if(arg.contains("\\") || arg.contains("/")){
+						fileDir = arg;
+					}else{
+						// "user.dir" is the working directory of console. (eg C:\Users\karlk\workspace\Java-proov)
+						fileDir += System.getProperty("user.dir") + "/" + arg; // logFileNameFromParams eg working directory with parameter timing.log
+						// 2) Check if no "." in log file name from command line parameters, perhaps user forgot to add file extension ".log"
+						if(!arg.contains(".")){ // arg is hopefully log file name from params
+							fileDir += ".log";
+						}
+						System.out.println("filedir is " + arg);
+						file = new File(fileDir); 
+						return file;
+					}
 				}
+				if(debug)System.out.println("Could not find file name/location from command line arguments.");
+				return null;	
 			}
-		}else{
-			if(debug)System.out.println("Could not find file name/location from command line arguments.");
-			return "";	
 		}
-		return "";
+		return null;
 	}
-	
+
 	public static int CheckCommandLineArgumentsForN(String[] args, boolean debug){
 		// Setting numeric command line argument as n
 		if(args.length > 0 && args.length < 3){
