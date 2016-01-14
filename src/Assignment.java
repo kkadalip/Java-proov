@@ -24,8 +24,18 @@ public class Assignment {
 		// Setting starting time for calculating program run duration in milliseconds.
 		long startTime = System.currentTimeMillis();
 		boolean debug = false; // Debug parameter, set true to see debug log in console.
-		createAndPrintHistogram(args, startTime, debug);
-		stopReadingTimeAndExit(startTime);
+		
+		// CHECK COMMAND LINE PARAMS:
+		checkCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
+		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
+		int nNumberFromParams = checkCommandLineArgumentsForN(args, debug);
+		File file = checkCommandLineArgumentsForLogFile(args, startTime, debug); // instead of String logFileNameFromParams
+		
+		// CREATE, PRINT HISTOGRAM:
+		createAndPrintHistogram(args, nNumberFromParams, file, startTime, debug);
+		
+		// PRINT PROGRAM DURATION, EXIT PROGRAM:
+		stopTimeAndExit(startTime);
 	} // END of MAIN method
 
 	public static void checkCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
@@ -44,19 +54,19 @@ public class Assignment {
 				System.out.println("<logfile>,            file name with extension (if log file is in command prompt working directory) or exact location of log file");
 				System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
 				// End calculating program run duration.
-				stopReadingTimeAndExit(startTime);
+				stopTimeAndExit(startTime);
 				System.exit(0);
 				return; // User needs help, stopping program after having printed out help menu and program duration
 			}else if(!userNeedsHelp && args.length > 2){
 				// More than 2 arguments and no help argument
 				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
-				stopReadingTimeAndExit(startTime);
+				stopTimeAndExit(startTime);
 				System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
 			}
 		}else{
 			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
 			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
-			stopReadingTimeAndExit(startTime);
+			stopTimeAndExit(startTime);
 			System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
 		}
 	}
@@ -92,7 +102,7 @@ public class Assignment {
 		}
 		if(file == null){
 			System.out.println("Log file location parameter not found, type -h for help.");
-			stopReadingTimeAndExit(startTime);
+			stopTimeAndExit(startTime);
 		}
 		return null;
 	}
@@ -115,21 +125,14 @@ public class Assignment {
 		return 0;
 	}
 
-	public static void stopReadingTimeAndExit(long startTime){
+	public static void stopTimeAndExit(long startTime){
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
 		System.exit(0);
 	}
 
-	public static void createAndPrintHistogram(String[] args, long startTime, boolean debug){
-		// START ------------- CHECKING COMMAND LINE ARGUMENTS ---------------
-		checkCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
-		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
-		int nNumberFromParams = checkCommandLineArgumentsForN(args, debug);
-		File file = checkCommandLineArgumentsForLogFile(args, startTime, debug); // instead of String logFileNameFromParams
-		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
-
+	public static void createAndPrintHistogram(String[] args, int nNumberFromParams, File file, long startTime, boolean debug){
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
 
 		// NOTE: If list of unique dates are needed separately, create a list to hold that: eg 
