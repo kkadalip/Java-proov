@@ -380,10 +380,11 @@ public class Assignment {
 			// eg 78 / 10 is 7.8 and when rounded then 8 boxes
 			howManyBoxesFilled = (int) Math.round(percentage / 10);
 			//System.out.println("Percentage: " + percentage +" Boxes filled: " + howManyBoxesFilled);
-			// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
+			// If no boxes to fill, show empty box line:
 			if(howManyBoxesFilled <= 0){
 				histogramBoxes = "[ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]";
 			}else{
+				// If there are boxes to fill, loop 10 times and print [x] if box needs to be filled, [ ] if not:
 				histogramBoxes = "";
 				for(int j=0; j<10; j++){
 					if(j<howManyBoxesFilled){
@@ -393,29 +394,30 @@ public class Assignment {
 					}
 				}
 			}
+			// PRINT HISTOGRAM LINES: eg Hour: 00 [x][x][x][x][x][x][x][ ][ ][ ](072.36%) Total: 0712 Avg: 118.67 req./hour
 			if(i < 10){
 				System.out.println("Hour: 0"+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Total: "+ dfNoDecimals.format(totalRequests) + " Avg: " + df.format(avgRequests) + " req./hour");
 			}else{
 				System.out.println("Hour: "+i+" "+histogramBoxes+"("+df.format(percentage)+"%)"+" Total: "+ dfNoDecimals.format(totalRequests) +" Avg: " + df.format(avgRequests) + " req./hour");
 			}
 		}
-
+		
 		Map<String, Double> pathsWithAverageDuration = new TreeMap<String,Double>();
-
 		double totalCount = 0.0;
 		int sum = 0;
 		// PRINTING ALL unsorted RESULTS WITH AVERAGE DURATIONS
 		if(debug)System.out.println("[Average duration][Request] unsorted");
+		// Looping through unique [paths with important query parts]
 		for (Map.Entry<String, List<String>> entry : uniquePathsWithResourcesMap.entrySet()){ // KEY AND VALUE
-			String path = entry.getKey();
+			String path = entry.getKey(); // path with somefield=somename anotherfield=anothername ...
 			List<String> durations = entry.getValue();
 			totalCount = durations.size();
-			//System.out.println("DURATIONS SIZE IS " + totalCount);
+			//System.out.println("path is "+ path + " DURATIONS SIZE IS " + totalCount); //eg path is /mainContent.do action=SUBSCRIPTION contentId=main_subscription  DURATIONS SIZE IS 42.0
 			if(totalCount > 0){
 				sum = 0;
 				for(String duration : durations){
 					sum += Double.parseDouble(duration);
-					//System.out.println("duration added to sum " + duration);
+					//System.out.println("duration added to sum " + duration); // single duration in ms that was added to sum, eg 5 or 3748
 				} // INNER FOR END
 				//System.out.println("sum is " + sum + " totalcount is " + totalCount);
 				double average = sum / totalCount;
@@ -423,13 +425,13 @@ public class Assignment {
 				// Formatter does the rounding for me!
 				if(debug)System.out.println("["+formatter.format(average)+"ms] " + path);
 				//System.out.println("["+Math.round(average * 100d) / 100d + "ms]" + path);
-				//pathsWithAverageDuration.put(path, Double.toString(average));
+				//pathsWithAverageDuration.put(path, Double.toString(average)); // not using String anymore, below same thing with Double
 				pathsWithAverageDuration.put(path, average);
 			}else{
 				if(debug)System.out.println(path + " Average duration: " + "??? ms.");
 			}
 		} // FOR END
-
+		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 		//printMap(pathsWithAverageDuration);
 
 		// NOTE: To sort Map by keys, use TreeMap
