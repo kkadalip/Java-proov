@@ -290,13 +290,12 @@ public class Assignment {
 				uniqueHistogramDays.add(date);
 			}
 			//if(!hourDurations.containsKey(date)){hourDurations.put(date);} // Not using this list of hour durations anymore.
-			// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 			System.out.println("-----Date:"+date+"-----");
 			int[][] hoursAndData = entry.getValue();
-			for(int i = 0; i < hoursAndData.length; i++){ // loop over ROWS, i ie row value is hour 0 to 23
-				for(int element = 0; element < hoursAndData[i].length; element++){ // loop over COLUMNS:
-					//System.out.printf("Row: %d Element: %d Value: %d\n", row, element, container[row][element]);
-					int requestsAmount = hoursAndData[i][element];
+			for(int i = 0; i < hoursAndData.length; i++){ // loop over ROWS, i ie row value is hour 0 to 23 (so i and value should be same in this case)
+				for(int j = 0; j < hoursAndData[i].length; j++){ // loop over COLUMNS that hold hour request amount data:
+					//System.out.printf("Row(i): %d Column(j): %d Value(request amount): %d\n", i, j, hoursAndData[i][j]); // (DEBUG) eg Row(i): 13 Column(j): 0 Value(request amount): 29
+					int requestsAmount = hoursAndData[i][j];
 					if(requestsAmount > 0){
 						// FOR HISTOGRAM to get unique hours, however not important in my case since I'm showing a whole 24h period including empty hours:
 						//if(!uniqueHistogramHours.contains(row)){uniqueHistogramHours.add(row);}
@@ -310,40 +309,16 @@ public class Assignment {
 						currentRowInts.add(requestsAmount);
 						hourDurations.put(i, currentRowInts); //requestsAmount);
 
-						// eg hourValues[hour 10][1000]th slot for data
-						//						if(hourValues[row] == null){
-						//							//hourValues[row][0] = new int [row][0];
-						//							System.out.println("Hourvalues row is null ("+row+")");
-						//							System.out.println("hourvalues length is " + hourValues.length);
-						//							//hourValues[row] = new int[row];
-						//							//int currentHourVals = hourValues[row];
-						//							//hourValues[row][0] ++;
-						//							hourValues[row][0] = new int[row]; // new int [row][0]
-						//							System.out.println("hourvalues length is " + hourValues.length);
-						//						}
-
-						//						int slotToPutData = 0;
-						//						if(hourValues[row] != null){
-						//							slotToPutData = hourValues[row].length;
-						//						}else{
-						//							hourValues[row][0] = new int[];
-						//						}
-						//						System.out.println("TRYING TO PUT DATA INTO hourValues["+row+"]["+slotToPutData+"]");
-						////						hourValues[row][slotToPutData] = requestsAmount;
-						//						//hourValues[row][0] ++;
-						//						slotToPutData++;
-
 						if(i < 10){
-							//System.out.println("[Hour: 0"+ row + "] [Requests: " + element +"]");
 							System.out.println("[Hour: 0"+ i + "] [Requests: " + requestsAmount +"]");
 						}else{
-							//System.out.println("[Hour: "+ row + "] [Requests: " + element +"]");
 							System.out.println("[Hour: "+ i + "] [Requests: " + requestsAmount +"]");
 						}
 					}
-				}
-			}
+				} // END FOR hoursAndData COLUMNS
+			} // END FOR hoursAndData ROWS
 		} // END FOR
+		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 		double uniqueHistogramDaysAmount = uniqueHistogramDays.size();
 		System.out.println("\nHistogram of hourly number of requests. Average calculated over " + (int)uniqueHistogramDaysAmount + " day(s)");
 
@@ -355,6 +330,10 @@ public class Assignment {
 		//				System.out.println("[Hour: " + hour + "]");
 		//			}
 		//		}
+
+		// Decimal formats for displaying numbers
+		DecimalFormat df = new DecimalFormat("000.00");
+		DecimalFormat dfNoDecimals = new DecimalFormat("0000");
 
 		double totalRequestsThisHour = 0;
 		int totalRequestsOverall = 0;
@@ -372,16 +351,14 @@ public class Assignment {
 			}
 			// REQUESTS AMOUNT
 			double averageTotalRequestsThisHour = totalRequestsThisHour / uniqueHistogramDaysAmount;
-			averageRequestsPerHour[hour][0]=averageTotalRequestsThisHour;
-
-			totalRequestsPerHour[hour][0] = totalRequestsThisHour;
-			// FOR ONLY UNIQUE HOURS DATA
-			//			if(hour < 10){
-			//				System.out.println("Hour: 0" + hour + " Avg. requests: " + averageTotalRequestsThisHour);
-			//			}else{
-			//				System.out.println("Hour: " + hour + " Avg. requests: " + averageTotalRequestsThisHour);
-			//			}
-
+			averageRequestsPerHour[hour][0]=averageTotalRequestsThisHour; // Average requests amount per hour
+			totalRequestsPerHour[hour][0] = totalRequestsThisHour; // Total request amount per hour
+			// FOR ONLY UNIQUE HOURS DATA (eg Hour: 06 Avg. requests: 016.17 but only for hours that have some data)
+			//if(hour < 10){
+			//	System.out.println("Hour: 0" + hour + " Avg. requests: " + df.format(averageTotalRequestsThisHour));
+			//}else{
+			//	System.out.println("Hour: " + hour + " Avg. requests: " + df.format(averageTotalRequestsThisHour));
+			//}
 		}
 
 		// MAX WRONG BECAUSE THIS IS NOT DIVIDED BY INSTANCE AMOUNT?
@@ -401,8 +378,7 @@ public class Assignment {
 		//		System.out.println("Total amount of requests: " + totalAverageAmountOfRequests); // adds averages together, NOT THE OVERALL TOTAL!!!! USELESS DATA
 		System.out.println("Total amount of requests: " + totalRequestsOverall);
 
-		DecimalFormat df = new DecimalFormat("000.00");
-		DecimalFormat dfNoDecimals = new DecimalFormat("0000");
+
 		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour));
 		// Max avg dur is 100%
 		String histogramBoxes = "";
