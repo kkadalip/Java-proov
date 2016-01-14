@@ -483,7 +483,8 @@ public class Assignment {
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
-		return;
+		//return;
+		System.exit(0);
 	}
 
 	// For sorting map by comparator
