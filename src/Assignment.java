@@ -24,11 +24,16 @@ public class Assignment {
 		// Setting starting time for calculating program run duration in milliseconds.
 		long startTime = System.currentTimeMillis();
 		boolean debug = false; // Debug parameter, set true to see debug log in console.
+		createAndPrintHistogram(args, startTime, debug);
+		stopReadingTimeAndExit(startTime);
+	} // END of MAIN method
+
+	public static void createAndPrintHistogram(String[] args, long startTime, boolean debug){
 		// START ------------- CHECKING COMMAND LINE ARGUMENTS ---------------
-		CheckCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
+		checkCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
 		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
 		int nNumberFromParams = CheckCommandLineArgumentsForN(args, debug);
-		File file = CheckCommandLineArgumentsForLogFile(args, startTime, debug); // instead of String logFileNameFromParams
+		File file = checkCommandLineArgumentsForLogFile(args, startTime, debug); // instead of String logFileNameFromParams
 		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
 
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
@@ -393,10 +398,9 @@ public class Assignment {
 				if(debug)System.out.println(hourAndRequestsAmount);
 			}
 		}
-		stopReadingTimeAndExit(startTime);
-	} // END of MAIN method
-
-	public static void CheckCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
+	}
+	
+	public static void checkCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
 		if(args.length > 0){
 			List<String> argsList = Arrays.asList(args);
 			// Checking for command line arguments -h, -? and -help, if any of them exists in command line arguments, show help menu and stop program.
@@ -429,7 +433,7 @@ public class Assignment {
 		}
 	}
 
-	public static File CheckCommandLineArgumentsForLogFile(String[] args, long startTime, boolean debug){
+	public static File checkCommandLineArgumentsForLogFile(String[] args, long startTime, boolean debug){
 		// Setting numeric command line argument as n
 		String fileDir = "";
 		File file = null;		
