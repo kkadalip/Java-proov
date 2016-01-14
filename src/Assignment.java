@@ -28,7 +28,7 @@ public class Assignment {
 		CheckCommandLineArgumentsIfUserNeedsHelp(args, startTime); // if user needs help, prints out help menu, program duration and stops program
 		// Command line "n" parameter. If set then program prints out top n (exact value of n is passed as program argument) resources with highest average request duration.
 		int nNumberFromParams = CheckCommandLineArgumentsForN(args, debug);
-		File file = CheckCommandLineArgumentsForLogFile(args, debug); // instead of String logFileNameFromParams
+		File file = CheckCommandLineArgumentsForLogFile(args, startTime, debug); // instead of String logFileNameFromParams
 		// END --------------- CHECK COMMAND LINE ARGUMENTS ---------------
 
 		// START ----------- HISTOGRAM RELATED THINGS (DATES, HOURS, HOUR DATA) ---------------
@@ -393,7 +393,7 @@ public class Assignment {
 				if(debug)System.out.println(hourAndRequestsAmount);
 			}
 		}
-		stopReadingTimeAndReturn(startTime);
+		stopReadingTimeAndExit(startTime);
 	} // END of MAIN method
 
 	public static void CheckCommandLineArgumentsIfUserNeedsHelp(String[] args, long startTime){
@@ -412,29 +412,29 @@ public class Assignment {
 				System.out.println("<logfile>,            file name with extension (if log file is in command prompt working directory) or exact location of log file");
 				System.out.println("[number],             program prints top n resources with highest average request duration (optional)");
 				// End calculating program run duration.
-				stopReadingTimeAndReturn(startTime);
+				stopReadingTimeAndExit(startTime);
 				System.exit(0);
 				return; // User needs help, stopping program after having printed out help menu and program duration
 			}else if(!userNeedsHelp && args.length > 2){
 				// More than 2 arguments and no help argument
 				System.out.println("You are trying to use more than two command line arguments. Type -h for help.");
-				stopReadingTimeAndReturn(startTime);
+				stopReadingTimeAndExit(startTime);
 				System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
 			}
 		}else{
 			// User doesn't have any command line arguments. Minimum log name (or location) is needed.
 			System.out.println("You need to use command line parameters to use this program. Type -h for help.");
-			stopReadingTimeAndReturn(startTime);
+			stopReadingTimeAndExit(startTime);
 			System.exit(0); // User needs help, stopping program after having printed out help menu and program duration
 		}
 	}
 
-	public static File CheckCommandLineArgumentsForLogFile(String[] args, boolean debug){
+	public static File CheckCommandLineArgumentsForLogFile(String[] args, long startTime, boolean debug){
 		// Setting numeric command line argument as n
+		String fileDir = "";
+		File file = null;		
 		if(args.length > 0 && args.length < 3){
 			// eg logfile.log or C:\Users\karlk\Desktop\logfile.log or just logfile in "java -jar dist/Assignment.jar C:\Users\karlk\Desktop\logfile.log 10" while being in C:\Users\karlk\workspace\Java-proov
-			String fileDir = "";
-			File file;
 			for(String arg : args){
 				if(!isNumeric(arg)){
 					if(debug)System.out.println("Command line argument "+ arg +" not numeric, using as log name/location.");
@@ -454,9 +454,13 @@ public class Assignment {
 						return file;
 					}
 				}
-				if(debug)System.out.println("Could not find file name/location from command line arguments.");
-				return null;	
+				//if(debug)System.out.println("Could not find file name/location from command line arguments.");
+				//return null;	
 			}
+		}
+		if(file == null){
+			System.out.println("Log file location parameter not found, type -h for help.");
+			stopReadingTimeAndExit(startTime);
 		}
 		return null;
 	}
@@ -479,11 +483,10 @@ public class Assignment {
 		return 0;
 	}
 
-	public static void stopReadingTimeAndReturn(long startTime){
+	public static void stopReadingTimeAndExit(long startTime){
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
-		//return;
 		System.exit(0);
 	}
 
