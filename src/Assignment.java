@@ -440,7 +440,6 @@ public class Assignment {
 		// NOTE: Convert Map to List, sort list by Comparator, put list back to Map
 		// NOTE: Map ---> List ---> Sort --> SortedList ---> Map
 		Map<String, Double> sortedMap = sortByComparator(pathsWithAverageDuration);
-		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 		// PRINTING SORTED MAP AND SHOWING n AMOUNT OF HIGHEST AVERAGE DURATION RESULTS
 		String sortedResultsHeader = "\n[Average duration][Request]";
 		if(nNumberFromParams>0){
@@ -449,18 +448,8 @@ public class Assignment {
 			sortedResultsHeader += "(Showing " + sortedMap.size() + " results)";
 		}
 		System.out.println(sortedResultsHeader);
-
-		//printMap(sortedMap, Optional.empty());
-		//printMap(sortedMap, Optional.of(1000)); nNumberFromParams
 		printMap(sortedMap, nNumberFromParams);
-
-		// for (int i=0; i < array.length; i++) {
-		// DATES LIST NOT NEEDED
-		//		if(debug){
-		//			for(String d : uniqueDates){
-		//				System.out.println("Date is: " + d);
-		//			}
-		//		}
+		//for(String d : uniqueDates){System.out.println("Date is: " + d);} // (DEBUG) DATES LIST NOT NEEDED
 
 		String hourAndRequestsAmount = "";
 		for (int i = 0; i < hoursAndRequests.length; i++) {
@@ -479,8 +468,9 @@ public class Assignment {
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
 		System.out.println("\nProgram ran for " + totalTime + " milliseconds.");
-	} // END MAIN
+	} // END of MAIN method
 
+	// For sorting map by comparator
 	private static Map<String, Double> sortByComparator(Map<String, Double> unsortMap) {
 
 		// Convert Map to List
@@ -502,6 +492,8 @@ public class Assignment {
 		}
 		return sortedMap;
 	}
+	
+	// Overload to use 3 param printMap without n
 	public static void printMap(Map<String, Double> map) {
 		printMap(map, 0);
 	}
