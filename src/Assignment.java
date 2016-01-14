@@ -91,7 +91,7 @@ public class Assignment {
 						if(!arg.contains(".")){ // arg is hopefully log file name from params
 							fileDir += ".log";
 						}
-						System.out.println("filedir is " + arg);
+						//System.out.println("filedir is " + arg);
 						file = new File(fileDir); 
 						return file;
 					}
