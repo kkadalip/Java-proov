@@ -148,7 +148,7 @@ public class Assignment {
 				// 4) OPTIONAL USER CONTEXT - not needed (in square brackets), eg [USER:300109921258]
 				// 5) (if 7 parts total) URI + query string OR (if 8 or 9 parts total) requested RESOURCE name (one string), eg getBroadbandSubscriptions
 				String resource = wordsOfLine[4];
-				//if(!uniqueResources.contains(resource)){uniqueResources.add(resource);} // For debugging to print out all unique resources
+				//if(!uniqueResources.contains(resource)){uniqueResources.add(resource);} // (DEBUG) For debugging to print out all unique resources
 				// (NOTE: if 8 elements then 6) probably optional user context again eg CUS12B1435)
 				// (NOTE: if 9 elements then 6) data payload elements for resource (0..n elements) eg 300109921258)
 				// (NOTE: if 9 elements then 7) boolean something eg true)
@@ -172,7 +172,7 @@ public class Assignment {
 					if(aURI.getPath() != null){
 						String path = aURI.getPath();
 						if(debug)System.out.println("URI path: " + path); // eg /substypechange.do
-						//if(!uniquePaths.contains(path)){uniquePaths.add(path);}
+						//if(!uniquePaths.contains(path)){uniquePaths.add(path);} // (DEBUG) For debugging to print out all unique paths
 						String extraQueryParts = ""; // Holds all extra parts of URI temporarily IMPORTANT!!!
 						// IF URI HAS QUERY (the part after whateverpath?)  eg load=true&id=6810D9E1D84736F6FF8F039C747C3DD3&contentId=main_subscription
 						if(aURI.getQuery() != null){
@@ -258,7 +258,7 @@ public class Assignment {
 			return;
 		}
 
-		// PRINTING OUT ALL UNIQUE RESOURCES IN LOG FILE (130)
+		// PRINTING OUT ALL UNIQUE LINES (not really resources) IN LOG FILE (130)
 		//		Collections.sort(uniqueResources);
 		//		System.out.println("------------------------ There are " + uniqueResources.size() + " unique resources.");
 		//		for(String resource : uniqueResources){System.out.println(resource);}
@@ -318,18 +318,11 @@ public class Assignment {
 				} // END FOR hoursAndData COLUMNS
 			} // END FOR hoursAndData ROWS
 		} // END FOR
+		//for(int hour : uniqueHistogramHours){System.out.println("[Hour: " + hour + "]");} // (DEBUG) Unique hours that have any data
+		
 		// -------------------------------------------------------------------------------------------------------------------------------REVIEW AND CLEAN BELOW:
 		double uniqueHistogramDaysAmount = uniqueHistogramDays.size();
 		System.out.println("\nHistogram of hourly number of requests. Average calculated over " + (int)uniqueHistogramDaysAmount + " day(s)");
-
-		//System.out.println("\nHistogram of hourly request DURATIONS: Average over " + (int)uniqueHistogramDaysAmount + " day(s)");
-		//		for(int hour : uniqueHistogramHours){
-		//			if(hour <10){
-		//				System.out.println("[Hour: 0" + hour + "]");
-		//			}else{
-		//				System.out.println("[Hour: " + hour + "]");
-		//			}
-		//		}
 
 		// Decimal formats for displaying numbers
 		DecimalFormat df = new DecimalFormat("000.00");
@@ -365,7 +358,7 @@ public class Assignment {
 		double avgRequests = 0;
 		double totalRequests = 0; // in one hour
 		//double maxRequestsInHour = 0;
-		int totalAverageAmountOfRequests = 0; // TODO do not use this anymore, just use total amount divided by days or smth
+		int totalAverageAmountOfRequests = 0; // TODO do not use this in the future, just use total amount divided by days or something better
 
 		for(int i=0; i<averageRequestsPerHour.length; i++){
 			double tmp = averageRequestsPerHour[i][0];
@@ -375,9 +368,8 @@ public class Assignment {
 			//}
 		}
 
-		//		System.out.println("Total amount of requests: " + totalAverageAmountOfRequests); // adds averages together, NOT THE OVERALL TOTAL!!!! USELESS DATA
+		//System.out.println("Total amount of requests: " + totalAverageAmountOfRequests); // adds averages together, NOT THE OVERALL TOTAL!!!! USELESS DATA
 		System.out.println("Total amount of requests: " + totalRequestsOverall);
-
 
 		//System.out.println("Maximum average request amount in hour is " + df.format(maxRequestsInHour));
 		// Max avg dur is 100%
@@ -489,8 +481,7 @@ public class Assignment {
 			}
 			hourAndRequestsAmount += i + " ";
 			for (int j = 0; j < hoursAndRequests[i].length; j++) {
-				////System.out.print(hoursDurations[i][j]);
-				//System.out.println("Duration: " + hoursDurations[i][0]);
+				//System.out.println("Duration: " + hoursDurations[i][0]); //or [i][j]
 				hourAndRequestsAmount += "Requests: " + hoursAndRequests[i][0];
 				if(debug)System.out.println(hourAndRequestsAmount);
 			}
